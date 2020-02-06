@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<backdrop:SfBackdropPage  NavigationPage.HasNavigationBar="True" xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"  xmlns:backdrop="clr-namespace:Syncfusion.XForms.Backdrop;assembly=Syncfusion.SfBackdrop.XForms" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:navigationdrawer="clr-namespace:Syncfusion.SfNavigationDrawer.XForms;assembly=Syncfusion.SfNavigationDrawer.XForms" xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" x:Class="Gbook.GradesPage">
+    <ContentPage.ToolbarItems> 
+        <ToolbarItem x:Name="hamburgerButton" Icon="Hamburger.png" Text="Menu" Clicked="hamburgerButton_Clicked"/>
+    </ContentPage.ToolbarItems>
+    <backdrop:SfBackdropPage.FrontLayer>
+        <backdrop:BackdropFrontLayer>
+           <navigationdrawer:SfNavigationDrawer x:Name="navDraw" DrawerHeaderHeight="160" DrawerFooterHeight="100" VerticalOptions="StartAndExpand">
+               <navigationdrawer:SfNavigationDrawer.ContentView>
+                    <Grid VerticalOptions="StartAndExpand">
+                        <gradient:SfGradientView>
+                            <gradient:SfGradientView.BackgroundBrush>           
+                                <gradient:SfLinearGradientBrush>                
+                                    <gradient:SfLinearGradientBrush.GradientStops>
+                                        <gradient:SfGradientStop x:Name="grad1" />
+                                        <gradient:SfGradientStop x:Name="grad2" />
+                                    </gradient:SfLinearGradientBrush.GradientStops>                
+                                </gradient:SfLinearGradientBrush>            
+                            </gradient:SfGradientView.BackgroundBrush>
+                        </gradient:SfGradientView>
+                        <StackLayout x:Name="ShimmerField" VerticalOptions="FillAndExpand">
+                            <StackLayout x:Name="Holder" VerticalOptions="StartAndExpand">
+                                <listView:SfListView x:Name="listView" android:ListView.IsFastScrollEnabled="false"></listView:SfListView>
+                            </StackLayout>
+                        </StackLayout>
+                    </Grid>
+               </navigationdrawer:SfNavigationDrawer.ContentView>
+               <navigationdrawer:SfNavigationDrawer.DrawerHeaderView>
+                <Grid BackgroundColor="#1aa1d6" VerticalOptions="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label x:Name="StudentName" Grid.Row="1" HorizontalTextAlignment="Center" HorizontalOptions="Center" FontSize="20" TextColor="White"/>
+                </Grid>
+               </navigationdrawer:SfNavigationDrawer.DrawerHeaderView>
+                <navigationdrawer:SfNavigationDrawer.DrawerContentView>
+                    <Grid x:Name="SideNav">
+                      <listView:SfListView x:Name="navList" ItemSize="100">
+                        <listView:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="10">
+                                    <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.4*" />
+                                    <RowDefinition Height="0.6*" />
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{Binding NavTitle}" FontAttributes="Bold" TextColor="Teal" FontSize="21" />
+                                    <Label Grid.Row="1" Text="{Binding Desc}" TextColor="Teal" FontSize="15"/>
+                                </Grid>
+                            </DataTemplate>
+                        </listView:SfListView.ItemTemplate>
+                      </listView:SfListView>                    </Grid>
+                </navigationdrawer:SfNavigationDrawer.DrawerContentView>
+            </navigationdrawer:SfNavigationDrawer>
+        </backdrop:BackdropFrontLayer>
+    </backdrop:SfBackdropPage.FrontLayer>
+</backdrop:SfBackdropPage>

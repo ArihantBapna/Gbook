@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage NavigationPage.HasNavigationBar="False" NavigationPage.HasBackButton="False" xmlns:effectsView="clr-namespace:Syncfusion.XForms.EffectsView;assembly=Syncfusion.Core.XForms" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" xmlns:inputLayout="clr-namespace:Syncfusion.XForms.TextInputLayout;assembly=Syncfusion.Core.XForms" xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"  x:Class="Gbook.LoginPage">
+    <ContentPage.Content>
+        <Grid>
+            <gradient:SfGradientView>
+                <gradient:SfGradientView.BackgroundBrush>           
+                    <gradient:SfLinearGradientBrush>                
+                        <gradient:SfLinearGradientBrush.GradientStops>
+                            <gradient:SfGradientStop x:Name="grad1" />
+                            <gradient:SfGradientStop x:Name="grad2" />
+                        </gradient:SfLinearGradientBrush.GradientStops>
+                    </gradient:SfLinearGradientBrush>
+                </gradient:SfGradientView.BackgroundBrush>
+            </gradient:SfGradientView>
+            <StackLayout VerticalOptions="CenterAndExpand" Padding="30">
+                <StackLayout HorizontalOptions="FillAndExpand">
+                        <Label HorizontalTextAlignment="Center" TextColor="White" FontSize="Title" Text="Gradebook"></Label>
+                        <Frame BackgroundColor="Transparent">
+                            <StackLayout Spacing="30" Padding="5">
+                                <Frame Margin="0" Padding="0" BackgroundColor="Transparent">
+                                    <inputLayout:SfTextInputLayout UnfocusedColor="White" x:Name="usnHolder" ReserveSpaceForAssistiveLabels="False" Hint="Username" ContainerType="Filled" ContainerBackgroundColor="Transparent">
+                                    <Entry x:Name="usn" BackgroundColor="Transparent" TextColor="White"></Entry>
+                                    </inputLayout:SfTextInputLayout>
+                                </Frame>
+                                <Frame Margin="0" Padding="0" BackgroundColor="Transparent">
+                                    <inputLayout:SfTextInputLayout UnfocusedColor="White" x:Name="pwdHolder" EnablePasswordVisibilityToggle="True" ReserveSpaceForAssistiveLabels="False" Hint="Password" ContainerType="Filled" ContainerBackgroundColor="Transparent">
+                                    <Entry x:Name="pwd" BackgroundColor="Transparent" IsPassword="True" PlaceholderColor="Black" TextColor="White"></Entry>
+                                    </inputLayout:SfTextInputLayout>
+                                </Frame>
+                                <StackLayout HorizontalOptions="Center" VerticalOptions="End" Padding="5" Spacing="10">
+                                    <buttons:SfCheckBox StateChanged="TOSChanged"  x:Name="acceptTOS" TextColor="White" Text="I accept Terms and Conditions" CornerRadius="0"/>
+                                </StackLayout>
+                                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="30">
+                                    <effectsView:SfEffectsView ShouldIgnoreTouches="True" x:Name="buttonHolder" LongPressEffects="Ripple" CornerRadius="20,20,20,0">
+                                        <buttons:SfButton PressedBackgroundColor="White" IsEnabled="True" Clicked="OnLoginAttempt" FontAttributes="Bold" TextColor="White" x:Name="LoginButton" Text="Login"/>
+                                    </effectsView:SfEffectsView>
+                                    <StackLayout VerticalOptions="End" Padding="0,20,0,20">
+                                        <buttons:SfCheckBox x:Name="rememberCB" TextColor="White" Text="Remember my MCPS login"/>
+                                    </StackLayout>
+                                </StackLayout>  
+                            </StackLayout>
+                        </Frame>
+                        <ActivityIndicator x:Name="indicator" HeightRequest="40" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                        <ActivityIndicator.WidthRequest>
+                            <OnPlatform x:TypeArguments="x:Double" iOS="100" Android="100" WinPhone="400" />
+                        </ActivityIndicator.WidthRequest>
+                        <ActivityIndicator.Color>
+                            <OnPlatform x:TypeArguments="Color"
+                                        iOS="#2499CE" WinPhone="#2499CE" />
+                        </ActivityIndicator.Color>
+                        </ActivityIndicator>
+                </StackLayout>
+            </StackLayout>
+        </Grid>
+     </ContentPage.Content>
+</ContentPage>

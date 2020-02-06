@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" xmlns:navigationdrawer="clr-namespace:Syncfusion.SfNavigationDrawer.XForms;assembly=Syncfusion.SfNavigationDrawer.XForms" xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms" xmlns:sfrangeslider="clr-namespace:Syncfusion.SfRangeSlider.XForms;assembly=Syncfusion.SfRangeSlider.XForms" xmlns:sfradialmenu="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms" x:Class="Gbook.Settings">
+    <ContentPage.ToolbarItems> 
+        <ToolbarItem Icon="Hamburger.png" Text="Menu" Clicked="hamburgerButton_Clicked"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+            <Style TargetType="sfrangeslider:SfRangeSlider">
+                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="ShowValueLabel" Value="True"/>
+                <Setter Property="TrackSelectionThickness" Value="0.8"/>
+                <Setter Property="TrackThickness" Value="0.5"/>
+                <Setter Property="TickFrequency" Value="255"/>
+                <Setter Property="StepFrequency" Value="1"/>
+                <Setter Property="TickPlacement" Value="None"/>
+                <Setter Property="Minimum" Value="0"/>
+                <Setter Property="Maximum" Value="255"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+            <navigationdrawer:SfNavigationDrawer x:Name="navDraw" DrawerHeaderHeight="160" DrawerFooterHeight="100" VerticalOptions="StartAndExpand">
+                <navigationdrawer:SfNavigationDrawer.ContentView>
+                    <Grid VerticalOptions="StartAndExpand">
+                        <gradient:SfGradientView>
+                            <gradient:SfGradientView.BackgroundBrush>           
+                                <gradient:SfLinearGradientBrush>                
+                                    <gradient:SfLinearGradientBrush.GradientStops>
+                                        <gradient:SfGradientStop x:Name="grad1" />
+                                        <gradient:SfGradientStop x:Name="grad2" />
+                                    </gradient:SfLinearGradientBrush.GradientStops>                
+                                </gradient:SfLinearGradientBrush>            
+                            </gradient:SfGradientView.BackgroundBrush>
+                        </gradient:SfGradientView>
+                        <StackLayout x:Name="ShimmerField" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" >
+                            <StackLayout x:Name="Holder" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand">
+                                <StackLayout VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Orientation="Vertical">
+                                    <StackLayout VerticalOptions="End" HorizontalOptions="Center" Orientation="Horizontal">
+                                        <Label Text="Doughnut" HorizontalOptions="Start"></Label>
+                                        <buttons:SfSwitch AllowIndeterminateState="False"  x:Name="ChartSwitch" StateChanged="ChartSwitch_Changed" VisualType="Cupertino" HorizontalOptions="Center" />
+                                        <Label HorizontalOptions="End" Text="Bar Charts"></Label>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </Grid>
+                </navigationdrawer:SfNavigationDrawer.ContentView>
+                <navigationdrawer:SfNavigationDrawer.DrawerHeaderView>
+                <Grid BackgroundColor="#1aa1d6" VerticalOptions="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label x:Name="StudentName" Grid.Row="1" HorizontalTextAlignment="Center" HorizontalOptions="Center" FontSize="20" TextColor="White"/>
+                </Grid>
+                </navigationdrawer:SfNavigationDrawer.DrawerHeaderView>
+                <navigationdrawer:SfNavigationDrawer.DrawerContentView>
+                    <Grid x:Name="SideNav">
+                      <listView:SfListView x:Name="navList" ItemSize="100">
+                        <listView:SfListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="10">
+                                    <Grid.RowDefinitions>
+                                    <RowDefinition Height="0.4*" />
+                                    <RowDefinition Height="0.6*" />
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{Binding NavTitle}" FontAttributes="Bold" TextColor="Teal" FontSize="21" />
+                                    <Label Grid.Row="1" Text="{Binding Desc}" TextColor="Teal" FontSize="15"/>
+                                </Grid>
+                            </DataTemplate>
+                        </listView:SfListView.ItemTemplate>
+                      </listView:SfListView>                    </Grid>
+                </navigationdrawer:SfNavigationDrawer.DrawerContentView>
+            </navigationdrawer:SfNavigationDrawer>
+    </ContentPage.Content>
+</ContentPage>
