@@ -30,6 +30,7 @@ namespace Gbook.ClassFiles
             navy.Add(new NavList() { NavTitle = "Grades", Desc = "Look at your grades" });
             navy.Add(new NavList() { NavTitle = "Settings", Desc = "Change your preferences" });
             navy.Add(new NavList() { NavTitle = "About", Desc = "Who we are" });
+            navy.Add(new NavList() { NavTitle = "Logout", Desc = "Don't want to save your info no " });
         }
     }
 }

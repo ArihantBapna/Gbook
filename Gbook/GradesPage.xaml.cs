@@ -526,7 +526,12 @@ namespace Gbook
             {
                 Application.Current.MainPage = new NavigationPage(new Settings()) { BarBackgroundColor = LoginPage.g1, BarTextColor = Color.White };
             }
+            else if (m == "Logout")
+            {
+                Globals.Dataset.Clear();
+                Application.Current.MainPage = new NavigationPage(new LoginPage());
 
+            }
         }
 
         void hamburgerButton_Clicked(object sender, EventArgs e)
