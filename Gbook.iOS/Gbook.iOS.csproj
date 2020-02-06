@@ -174,4 +174,8 @@
       <Name>Gbook</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Hamburger.png" />
+    <BundleResource Include="Resources\ArrowDown.png" />
+  </ItemGroup>
 </Project>
