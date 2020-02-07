@@ -17,6 +17,7 @@ namespace Gbook
         public LoginPage()
         {
             InitializeComponent();
+            checkLoggedIn();
             SetColor();
         }
 
@@ -42,6 +43,47 @@ namespace Gbook
             pwdHolder.ContainerBackgroundColor = Color.FromRgba(0, 0, 0, 0.3);
 
             LoginButton.BackgroundColor = g1;
+        }
+
+        private async void checkLoggedIn()
+        {
+            ClientInitializor.username = Xamarin.Essentials.Preferences.Get("username", "null");
+            ClientInitializor.password = Xamarin.Essentials.Preferences.Get("password", "null");
+
+            if(ClientInitializor.username != "null")
+            {
+                await Task.Run(() => DoLogin());
+
+                if (DataFetcher.loggedIn)
+                {
+                    LoggedIn = true;
+
+                    if (Device.RuntimePlatform == Device.iOS)
+                    {
+                        await Navigation.PopToRootAsync();
+                    }
+                    Application.Current.MainPage = new NavigationPage(new GradesPage());
+                    //await Navigation.PushModalAsync(new GradesPage());
+                    ((NavigationPage)Application.Current.MainPage).BarBackgroundColor = g1;
+                }
+                else
+                {
+                    usnHolder.Hint = "Incorrect Username or Password";
+                    usnHolder.FocusedColor = Color.Red;
+                    usnHolder.Focus();
+                    pwd.Text = "";
+                    usn.Text = "";
+                    acceptTOS.IsChecked = false;
+                    LoginButton.IsEnabled = true;
+                    await LoginButton.FadeTo(1, 300);
+
+                    LoginButton.IsVisible = true;
+
+                    indicator.IsVisible = false;
+                    indicator.IsEnabled = false;
+                    indicator.IsRunning = false;
+                }
+            }
         }
 
         void TOSChanged(object sender, Syncfusion.XForms.Buttons.StateChangedEventArgs e)
@@ -70,6 +112,9 @@ namespace Gbook
             indicator.IsEnabled = true;
             indicator.IsRunning = true;
 
+            ClientInitializor.username = usn.Text;
+            ClientInitializor.password = pwd.Text;
+
             await Task.Run(() => DoLogin());
 
             if (!DataFetcher.loggedIn)
@@ -93,6 +138,12 @@ namespace Gbook
             {
                 LoggedIn = true;
 
+                if (rememberCB.IsChecked.Value)
+                {
+                    Xamarin.Essentials.Preferences.Set("username", ClientInitializor.username);
+                    Xamarin.Essentials.Preferences.Set("password", ClientInitializor.password);
+                }
+
                 if (Device.RuntimePlatform == Device.iOS)
                 {
                     await Navigation.PopToRootAsync();
@@ -106,9 +157,6 @@ namespace Gbook
 
         private async Task DoLogin()
         {
-            ClientInitializor.username = usn.Text;
-            ClientInitializor.password = pwd.Text;
-
             await DataFetcher.AttemptLogIn();
         }
     }

@@ -12,6 +12,7 @@ using Syncfusion.SfChart.XForms;
 using Syncfusion.XForms.Backdrop;
 using Xamarin.Forms;
 using Syncfusion.XForms.Border;
+using System.Threading.Tasks;
 
 namespace Gbook
 {
@@ -443,18 +444,11 @@ namespace Gbook
         }
 
         ///--- Listeneres ---///
-        private void ListView_OnSelectionChanged(object sender, ItemSelectionChangedEventArgs e)
+        private async void ListView_OnSelectionChanged(object sender, ItemSelectionChangedEventArgs e)
         {
             Data dat = (Data)listView.SelectedItem;
             Globals.currentAss = dat;
-            /*
-            var masterDetailPage = Application.Current.MainPage as MasterDetailPage;
-            masterDetailPage.Detail = new NavigationPage(new LoginPage())
-            {
-                BarBackgroundColor = LoginPage.g1,
-                BarTextColor = Color.White
-            };
-            */
+            await NavigationExtensions.PushAsyncSingle(Navigation,new AssignmentsPage(), true);
         }
 
         private void ListView_Loaded(object sender, ListViewLoadedEventArgs e)
@@ -529,6 +523,8 @@ namespace Gbook
             else if (m == "Logout")
             {
                 Globals.Dataset.Clear();
+                Xamarin.Essentials.Preferences.Remove("username");
+                Xamarin.Essentials.Preferences.Remove("password");
                 Application.Current.MainPage = new NavigationPage(new LoginPage());
 
             }
@@ -541,4 +537,5 @@ namespace Gbook
 
         //---------------//
     }
+
 }
