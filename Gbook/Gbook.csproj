@@ -27,6 +27,8 @@
     <PackageReference Include="Syncfusion.Xamarin.SfRangeSlider" Version="17.4.0.47" />
     <PackageReference Include="Syncfusion.Xamarin.SfComboBox" Version="17.4.0.47" />
     <PackageReference Include="Syncfusion.Xamarin.SfProgressBar" Version="17.4.0.47" />
+    <PackageReference Include="Syncfusion.Xamarin.SfMaskedEdit" Version="17.4.0.47" />
+    <PackageReference Include="Syncfusion.Xamarin.SfNumericTextBox" Version="17.4.0.47" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClassFiles\" />

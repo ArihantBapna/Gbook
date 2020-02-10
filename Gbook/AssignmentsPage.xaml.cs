@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Gbook.ClassFiles;
 using Gbook.Converters;
 using Gbook.ViewModel;
+using Syncfusion.SfNumericTextBox.XForms;
 using Syncfusion.XForms.ComboBox;
 using Xamarin.Forms;
 
@@ -12,7 +13,7 @@ namespace Gbook
     public partial class AssignmentsPage : ContentPage
     {
 
-        private static ObservableCollection<Assignments> Asses = new ObservableCollection<Assignments>();
+        private static ObservableCollection<Assignments> Asses;
         private static List<string> Cats = new List<string>();
         public AssignmentsPage()
         {
@@ -34,11 +35,15 @@ namespace Gbook
 
         private void InitList()
         {
-            Asses.Clear();
+
+            ObservableCollection<Assignments> asses = new ObservableCollection<Assignments>();
+
+            //Asses.Clear();
             Cats.Clear();
-            foreach(Assignments a in Globals.SelectedData.AssignmentsList)
+
+            foreach (Assignments a in Globals.SelectedData.AssignmentsList)
             {
-                Asses.Add(a);
+                asses.Add(a);
             }
             foreach(CategoryInfo c in Globals.SelectedData.CatInfoSet)
             {
@@ -47,6 +52,8 @@ namespace Gbook
                     Cats.Add(c.Description);
                 }
             }
+            Asses = asses;
+
             this.Title = Globals.SelectedData.CourseName;
             AssList.ItemsSource = Asses;
         }
@@ -66,7 +73,7 @@ namespace Gbook
             l.SetBinding(Label.TextProperty, new Binding("Description"));
 
             StackLayout subMain = new StackLayout() { Spacing = 0, Margin = 0, Padding = 0, HorizontalOptions = LayoutOptions.FillAndExpand ,Orientation = StackOrientation.Horizontal, VerticalOptions = LayoutOptions.Center };
-            SfComboBox cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = 200, HeightRequest = 40, TextColor = Color.White };
+            SfComboBox cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = 220, HeightRequest = 30, TextColor = Color.White };
             cat.ComboBoxSource = Cats;
             cat.IsEditableMode = false;
             
@@ -74,16 +81,22 @@ namespace Gbook
             cat.SetBinding(SfComboBox.SelectedIndexProperty, catBinding);
             cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType"));
 
+            StackLayout border = new StackLayout() {WidthRequest = 150, HeightRequest = 30, VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.EndAndExpand };
+            StackLayout score = new StackLayout() {Orientation = StackOrientation.Horizontal, WidthRequest=150, VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.CenterAndExpand };
 
-            Frame border = new Frame() {Margin = new Thickness(3,0), Padding = 0, WidthRequest = 40, HeightRequest = 30, VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.End };
-            StackLayout score = new StackLayout() { VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.Center };
-            Label scoreLabel = new Label() { FontSize = 13 ,TextColor = Color.White, FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center, VerticalTextAlignment = TextAlignment.Center };
-            scoreLabel.SetBinding(Label.TextProperty, new Binding("Percent", stringFormat: "{0}%"));
-            score.Children.Add(scoreLabel);
-            Binding binding3 = new Binding("Percent");
-            binding3.Converter = new ColorGradientConverter();
-            border.SetBinding(BackgroundColorProperty, binding3);
-            border.Content = score;
+            SfNumericTextBox points =new SfNumericTextBox() { TextAlignment = TextAlignment.Center ,WidthRequest = 70, HorizontalOptions = LayoutOptions.Start, TextColor = Color.White};
+            points.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Points", BindingMode.TwoWay));
+            points.SetBinding(BackgroundColorProperty, new Binding("BackColor", BindingMode.TwoWay));
+            points.MaximumNumberDecimalDigits = 1;
+            SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, WidthRequest = 70, HorizontalOptions = LayoutOptions.End, TextColor = Color.White};
+            possible.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Possible", BindingMode.TwoWay));
+            possible.SetBinding(BackgroundColorProperty, new Binding("BackColor", BindingMode.TwoWay));
+            possible.MaximumNumberDecimalDigits = 1;
+            score.Children.Add(points);
+            score.Children.Add(possible);
+             
+            border.Children.Add(score);
+            border.BackgroundColor = Color.Transparent;
 
             subMain.Children.Add(cat);
             subMain.Children.Add(border);

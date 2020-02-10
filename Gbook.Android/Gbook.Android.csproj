@@ -96,6 +96,12 @@
     <PackageReference Include="Syncfusion.Xamarin.SfProgressBar">
       <Version>17.4.0.47</Version>
     </PackageReference>
+    <PackageReference Include="Syncfusion.Xamarin.SfMaskedEdit">
+      <Version>17.4.0.47</Version>
+    </PackageReference>
+    <PackageReference Include="Syncfusion.Xamarin.SfNumericTextBox">
+      <Version>17.4.0.47</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />

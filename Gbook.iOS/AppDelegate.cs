@@ -7,6 +7,8 @@ using Syncfusion.XForms.iOS.Backdrop;
 using Syncfusion.XForms.iOS.EffectsView;
 using Foundation;
 using UIKit;
+using Syncfusion.XForms.iOS.MaskedEdit;
+using Syncfusion.SfNumericTextBox.XForms.iOS;
 
 namespace Gbook.iOS
 {
@@ -30,6 +32,12 @@ namespace Gbook.iOS
 
             //Combo box
             new Syncfusion.XForms.iOS.ComboBox.SfComboBoxRenderer();
+
+            //Mased Edit
+            SfMaskedEditRenderer.Init();
+
+            //Numeric Text Box
+            new SfNumericTextBoxRenderer();
 
             //Load Sf List view
             SfListViewRenderer.Init();

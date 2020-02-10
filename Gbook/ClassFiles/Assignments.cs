@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using Gbook.Methods;
+using Xamarin.Forms;
 
 namespace Gbook.ClassFiles
 {
@@ -83,6 +85,17 @@ namespace Gbook.ClassFiles
             }
         }
 
+        private Color backColor { get; set; }
+        public Color BackColor
+        {
+            get { return backColor; }
+            set
+            {
+                backColor = value;
+                RaisedOnPropertyChanged("BackgroundColor");
+            }
+        }
+
         private double percent { get; set; }
         public double Percent
         {
@@ -110,7 +123,10 @@ namespace Gbook.ClassFiles
         public void RaisedOnPropertyChanged(string _PropertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_PropertyName));
-            Console.WriteLine(_PropertyName);
+            if(_PropertyName == "AssignmentsPoints" || _PropertyName == "AssignmentsPossible")
+            {
+                this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible)*100), 0));
+            }
         }
     }
 

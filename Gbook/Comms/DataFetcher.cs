@@ -118,6 +118,8 @@ namespace Gbook.Comms
                         }
                         counter += 1;
                     }
+
+                    asses.BackColor = ColorGet.ColorFromPercent((int)Math.Round(asses.Percent, 0));
                 }
 
                 obj.NoOfCat = Cats.Count;
