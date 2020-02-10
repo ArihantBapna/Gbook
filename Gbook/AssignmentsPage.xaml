@@ -11,8 +11,11 @@
                 </gradient:SfLinearGradientBrush>            
             </gradient:SfGradientView.BackgroundBrush>
         </gradient:SfGradientView>
-        <StackLayout x:Name="ShimmerField" VerticalOptions="FillAndExpand">
-            <StackLayout x:Name="Holder" VerticalOptions="Start">
+        <StackLayout x:Name="ShimmerField" VerticalOptions="FillAndExpand" Orientation="Vertical">
+            <StackLayout VerticalOptions="Start">
+                <Label Text="This is some text"></Label>
+            </StackLayout>
+            <StackLayout x:Name="Holder" VerticalOptions="StartAndExpand">
                 <syncfusion1:SfListView x:Name="AssList" android:ListView.IsFastScrollEnabled="false"></syncfusion1:SfListView>
             </StackLayout>
         </StackLayout>

@@ -28,6 +28,9 @@ namespace Gbook.iOS
             //Range slider
             new SfRangeSliderRenderer();
 
+            //Combo box
+            new Syncfusion.XForms.iOS.ComboBox.SfComboBoxRenderer();
+
             //Load Sf List view
             SfListViewRenderer.Init();
             SfEffectsViewRenderer.Init();  //Initialize only when effects view is added to Listview.

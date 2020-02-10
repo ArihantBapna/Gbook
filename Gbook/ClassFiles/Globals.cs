@@ -10,6 +10,6 @@ namespace Gbook.ClassFiles
     {
         public static ObservableCollection<Data> Dataset = new ObservableCollection<Data>();
         public static List<Terms> TermsData = new List<Terms>();
-        public static Data currentAss = new Data();
+        public static Data SelectedData = new Data();
     }
 }

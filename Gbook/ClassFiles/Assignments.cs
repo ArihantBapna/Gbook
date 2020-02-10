@@ -1,17 +1,117 @@
 ﻿using System;
+using System.ComponentModel;
+
 namespace Gbook.ClassFiles
 {
-    public class Assignments
+    public class Assignments : INotifyPropertyChanged
     {
-        public string Description { get; set; }
-        public string Date { get; set; }
-        public string AssignmentType { get; set; }
-        public double Possible { get; set; }
-        public double Points { get; set; }
-        public double Weight { get; set; }
-        public double Percent { get; set; }
-        public string Grade { get; set; }
+        private string description { get; set; }
+        public string Description
+        {
+            get { return description; }
+            set
+            {
+                description = value;
+                RaisedOnPropertyChanged("Description");
+            }
+        }
 
+        private string date { get; set; }
+        public string Date
+        {
+            get { return date; }
+            set
+            {
+                date = value;
+                RaisedOnPropertyChanged("Date");
+            }
+        }
+
+        private string assignmentType { get; set; }
+        public string AssignmentType
+        {
+            get { return assignmentType; }
+            set
+            {
+                assignmentType = value;
+                RaisedOnPropertyChanged("AssignmentType");
+            }
+        }
+
+        private double possible { get; set; }
+        public double Possible
+        {
+            get { return possible; }
+            set
+            {
+                possible = value;
+                RaisedOnPropertyChanged("AssignmentsPossible");
+            }
+        }
+
+        private double points { get; set; }
+        public double Points
+        {
+            get { return points; }
+            set
+            {
+                points = value;
+                RaisedOnPropertyChanged("AssignmentsPoints");
+            }
+        }
+
+
+        private double weight { get; set; }
+        public double Weight
+        {
+            get { return weight; }
+            set
+            {
+                weight = value;
+                RaisedOnPropertyChanged("AssignmentsWeight");
+            }
+        }
+
+        private int catIndex { get; set; }
+        public int CatIndex
+        {
+            get { return catIndex; }
+            set
+            {
+                catIndex = value;
+                RaisedOnPropertyChanged("CategoryIndexChanged");
+            }
+        }
+
+        private double percent { get; set; }
+        public double Percent
+        {
+            get { return percent; }
+            set
+            {
+                percent = value;
+                RaisedOnPropertyChanged("AssignmentsPercent");
+            }
+        }
+
+        private string grade { get; set; }
+        public string Grade
+        {
+            get { return grade; }
+            set
+            {
+                grade = value;
+                RaisedOnPropertyChanged("AssignmentsGrade");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void RaisedOnPropertyChanged(string _PropertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_PropertyName));
+            Console.WriteLine(_PropertyName);
+        }
     }
 
 

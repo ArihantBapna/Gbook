@@ -97,6 +97,7 @@ namespace Gbook.Comms
 
                 foreach (Assignments asses in Asss)
                 {
+                    asses.AssignmentType = Regex.Replace(asses.AssignmentType, "[^a-zA-Z]", "");
                     if (Math.Abs(asses.Possible) > 0)
                     {
                         asses.Percent = (asses.Points / asses.Possible) * 100;
@@ -104,6 +105,18 @@ namespace Gbook.Comms
                     else
                     {
                         asses.Percent = 100;
+                    }
+                }
+                foreach(Assignments asses in Asss)
+                {
+                    int counter = 0;
+                    foreach (CategoryInfo cats2 in Cats)
+                    {
+                        if (cats2.Description == asses.AssignmentType)
+                        {
+                            asses.CatIndex = counter;
+                        }
+                        counter += 1;
                     }
                 }
 

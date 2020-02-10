@@ -75,8 +75,6 @@ namespace Gbook
                 listView.ItemGenerator = new ItemGeneratorExt(listView);
                 SetListViewListeners();
 
-
-
                 listView.ItemTemplate = SetListViewItemTemplate();
                 listView.GroupHeaderTemplate = DefGroupHeaderTemplate();
             }
@@ -169,7 +167,6 @@ namespace Gbook
             return t;
         }
         //End of GroupHeader Templates
-
 
         //List ItemTemplate
 
@@ -447,7 +444,7 @@ namespace Gbook
         private async void ListView_OnSelectionChanged(object sender, ItemSelectionChangedEventArgs e)
         {
             Data dat = (Data)listView.SelectedItem;
-            Globals.currentAss = dat;
+            Globals.SelectedData = dat;
             await NavigationExtensions.PushAsyncSingle(Navigation,new AssignmentsPage(), true);
         }
 
