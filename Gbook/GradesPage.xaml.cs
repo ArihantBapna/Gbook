@@ -445,7 +445,7 @@ namespace Gbook
         {
             Data dat = (Data)listView.SelectedItem;
             Globals.SelectedData = dat;
-            await NavigationExtensions.PushAsyncSingle(Navigation,new AssignmentsPage(), true);
+            await NavigationExtensions.PushAsyncSingle(Navigation, new AssignmentsPage(), true);
         }
 
         private void ListView_Loaded(object sender, ListViewLoadedEventArgs e)

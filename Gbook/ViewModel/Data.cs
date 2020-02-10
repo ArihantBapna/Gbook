@@ -74,7 +74,17 @@ namespace Gbook.ViewModel
 
         public int NoOfCat { get; set; }
         public List<CategoryInfo> CatInfoSet { get; set; }
-        public List<Assignments> AssignmentsList { get; set; }
+
+        private ObservableCollection<Assignments> assignmentsList { get; set; }
+        public ObservableCollection<Assignments> AssignmentsList
+        {
+            get { return assignmentsList; }
+            set
+            {
+                assignmentsList = value;
+                this.RaisedOnPropertyChanged("AssignmentsList");
+            }
+        }
 
         private bool isExpanded;
         public bool IsExpanded

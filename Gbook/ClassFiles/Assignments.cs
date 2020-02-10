@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Gbook.Methods;
 using Xamarin.Forms;
 
@@ -47,7 +48,8 @@ namespace Gbook.ClassFiles
             set
             {
                 possible = value;
-                RaisedOnPropertyChanged("AssignmentsPossible");
+                this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
+                RaisedOnPropertyChanged("Possible");
             }
         }
 
@@ -58,7 +60,8 @@ namespace Gbook.ClassFiles
             set
             {
                 points = value;
-                RaisedOnPropertyChanged("AssignmentsPoints");
+                this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
+                RaisedOnPropertyChanged("Points");
             }
         }
 
@@ -70,7 +73,7 @@ namespace Gbook.ClassFiles
             set
             {
                 weight = value;
-                RaisedOnPropertyChanged("AssignmentsWeight");
+                RaisedOnPropertyChanged("Weight");
             }
         }
 
@@ -81,7 +84,7 @@ namespace Gbook.ClassFiles
             set
             {
                 catIndex = value;
-                RaisedOnPropertyChanged("CategoryIndexChanged");
+                RaisedOnPropertyChanged("CatIndex");
             }
         }
 
@@ -92,7 +95,7 @@ namespace Gbook.ClassFiles
             set
             {
                 backColor = value;
-                RaisedOnPropertyChanged("BackgroundColor");
+                RaisedOnPropertyChanged("BackColor");
             }
         }
 
@@ -103,7 +106,7 @@ namespace Gbook.ClassFiles
             set
             {
                 percent = value;
-                RaisedOnPropertyChanged("AssignmentsPercent");
+                RaisedOnPropertyChanged("Percent");
             }
         }
 
@@ -114,7 +117,7 @@ namespace Gbook.ClassFiles
             set
             {
                 grade = value;
-                RaisedOnPropertyChanged("AssignmentsGrade");
+                RaisedOnPropertyChanged("Grade");
             }
         }
 
@@ -123,10 +126,6 @@ namespace Gbook.ClassFiles
         public void RaisedOnPropertyChanged(string _PropertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_PropertyName));
-            if(_PropertyName == "AssignmentsPoints" || _PropertyName == "AssignmentsPossible")
-            {
-                this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible)*100), 0));
-            }
         }
     }
 

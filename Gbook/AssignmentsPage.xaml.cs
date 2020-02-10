@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Gbook.ClassFiles;
 using Gbook.Converters;
 using Gbook.ViewModel;
@@ -17,6 +18,8 @@ namespace Gbook
         private static List<string> Cats = new List<string>();
         public AssignmentsPage()
         {
+            Asses = Globals.SelectedData.AssignmentsList;
+
             InitializeComponent();
             SetGradient();
             InitList();
@@ -35,7 +38,8 @@ namespace Gbook
 
         private void InitList()
         {
-
+            
+            /*
             ObservableCollection<Assignments> asses = new ObservableCollection<Assignments>();
 
             //Asses.Clear();
@@ -53,6 +57,7 @@ namespace Gbook
                 }
             }
             Asses = asses;
+            */
 
             this.Title = Globals.SelectedData.CourseName;
             AssList.ItemsSource = Asses;
@@ -62,7 +67,7 @@ namespace Gbook
         {
             AssList.ItemSpacing = 0;
             AssList.AutoFitMode = Syncfusion.ListView.XForms.AutoFitMode.DynamicHeight;
-
+            AssList.BindingContext = new Assignments();
             AssList.ItemTemplate = new DataTemplate(() =>
             {
             Grid MainGrid = new Grid() { VerticalOptions = LayoutOptions.StartAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromRgba(0, 0, 0, 0.5), Margin = new Thickness(0, 5), Padding = 0 };
@@ -88,10 +93,12 @@ namespace Gbook
             points.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Points", BindingMode.TwoWay));
             points.SetBinding(BackgroundColorProperty, new Binding("BackColor", BindingMode.TwoWay));
             points.MaximumNumberDecimalDigits = 1;
+            points.Completed += Handle_ValueChanged;
             SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, WidthRequest = 70, HorizontalOptions = LayoutOptions.End, TextColor = Color.White};
             possible.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Possible", BindingMode.TwoWay));
             possible.SetBinding(BackgroundColorProperty, new Binding("BackColor", BindingMode.TwoWay));
             possible.MaximumNumberDecimalDigits = 1;
+            possible.Completed += Handle_ValueChanged;
             score.Children.Add(points);
             score.Children.Add(possible);
              
@@ -111,10 +118,16 @@ namespace Gbook
             main.Children.Add(subMain);
             main.Children.Add(date);
 
-
             MainGrid.Children.Add(main);
             return MainGrid;
             });
+        }
+
+        private void Handle_ValueChanged(object sender, System.EventArgs e)
+        {
+            AssList.ItemsSource = null;
+            AssList.ItemsSource = Asses;
+            Console.WriteLine("Something happened");
         }
     }
 }

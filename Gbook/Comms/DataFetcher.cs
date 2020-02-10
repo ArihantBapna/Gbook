@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Gbook.ClassFiles;
@@ -223,10 +224,10 @@ namespace Gbook.Comms
             return CatInfoCleaned;
         }
 
-        private static async Task<List<Assignments>> SetAssignmentsData(string sectionid, string termid)
+        private static async Task<ObservableCollection<Assignments>> SetAssignmentsData(string sectionid, string termid)
         {
             List<AssignmentsRaw> AssignmentTable = new List<AssignmentsRaw>();
-            List<Assignments> AssignmentsTableModified = new List<Assignments>();
+            ObservableCollection<Assignments> AssignmentsTableModified = new ObservableCollection<Assignments>();
             string modifier = "";
             if (termid == ClientInitializor.CurrentTerm)
             {
