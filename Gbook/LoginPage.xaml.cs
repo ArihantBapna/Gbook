@@ -11,20 +11,23 @@ namespace Gbook
     {
         public static bool LoggedIn = false;
 
-        public static Color g1 = Color.FromHex("00416A");
-        public static Color g2 = Color.FromHex("E4E5E6");
-        public static double o1 = 0;
-        public static double o2 = 1;
+        public static Color g1, g2;
+        public static double o1, o2;
 
         public LoginPage()
         {
             InitializeComponent();
-            //checkLoggedIn();
+            checkLoggedIn();
             SetColor();
         }
 
         private void SetColor()
         {
+            g1 = Color.FromHex("00416A");
+            g2 = Color.FromHex("E4E5E6");
+            o1 = 0;
+            o2 = 1;
+
             grad1.Color = LoginPage.g1;
             grad1.Offset = LoginPage.o1;
 
@@ -44,7 +47,8 @@ namespace Gbook
 
         private async void checkLoggedIn()
         {
-
+            ClientInitializor.username = Xamarin.Essentials.Preferences.Get("username", "null");
+            ClientInitializor.password = Xamarin.Essentials.Preferences.Get("password", "null");
 
             if(ClientInitializor.username != "null")
             {
