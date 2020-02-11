@@ -4,8 +4,9 @@
         <ToolbarItem x:Name="hamburgerButton" Icon="Hamburger.png" Text="Menu" Clicked="hamburgerButton_Clicked"/>
     </ContentPage.ToolbarItems>
     <backdrop:SfBackdropPage.FrontLayer>
-        <backdrop:BackdropFrontLayer>
-           <navigationdrawer:SfNavigationDrawer x:Name="navDraw" DrawerHeaderHeight="160" DrawerFooterHeight="100" VerticalOptions="StartAndExpand">
+        <backdrop:BackdropFrontLayer x:Name="holdDraw" VerticalOptions="FillAndExpand">
+            <Grid VerticalOptions="FillAndExpand">
+             <navigationdrawer:SfNavigationDrawer x:Name="navDraw" DrawerHeaderHeight="160" DrawerFooterHeight="100" VerticalOptions="StartAndExpand">
                <navigationdrawer:SfNavigationDrawer.ContentView>
                     <Grid VerticalOptions="StartAndExpand">
                         <gradient:SfGradientView>
@@ -20,7 +21,12 @@
                         </gradient:SfGradientView>
                         <StackLayout x:Name="ShimmerField" VerticalOptions="FillAndExpand">
                             <StackLayout x:Name="Holder" VerticalOptions="StartAndExpand">
-                                <listView:SfListView x:Name="listView" android:ListView.IsFastScrollEnabled="false"></listView:SfListView>
+                                <Grid VerticalOptions="StartAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                </Grid>
+                                <listView:SfListView x:Name="listView" android:ListView.IsFastScrollEnabled="false" VerticalOptions="StartAndExpand" ></listView:SfListView>
                             </StackLayout>
                         </StackLayout>
                     </Grid>
@@ -51,6 +57,7 @@
                       </listView:SfListView>                    </Grid>
                 </navigationdrawer:SfNavigationDrawer.DrawerContentView>
             </navigationdrawer:SfNavigationDrawer>
+            </Grid>
         </backdrop:BackdropFrontLayer>
     </backdrop:SfBackdropPage.FrontLayer>
 </backdrop:SfBackdropPage>

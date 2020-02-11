@@ -54,15 +54,18 @@ namespace Gbook
 
         protected override void OnAppearing()
         {
-
+            Device.InvokeOnMainThreadAsync(() =>
+            {
+                double heightSide = Application.Current.MainPage.Height;
+                holdDraw.HeightRequest = heightSide + 500.0;
+                navDraw.HeightRequest = heightSide;
+                listView.HeightRequest = heightSide;
+            });
             if (LoginPage.LoggedIn)
             {
                 ((NavigationPage)Application.Current.MainPage).BarBackgroundColor = Color.FromHex("00416A");
                 ((NavigationPage)Application.Current.MainPage).BarTextColor = Color.White;
-
-                double heightSide = Application.Current.MainPage.Height;
-                double tHeightSide = heightSide + 500.0;
-                navDraw.HeightRequest = tHeightSide;
+        
 
                 SetBackLayerContent();
 

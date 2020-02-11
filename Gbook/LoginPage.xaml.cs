@@ -16,8 +16,10 @@ namespace Gbook
 
         public LoginPage()
         {
+            Task.Run(async () => await checkLoggedIn()).Wait();
+
             InitializeComponent();
-            checkLoggedIn();
+            
             SetColor();
         }
 
@@ -45,43 +47,59 @@ namespace Gbook
             LoginButton.BackgroundColor = g1;
         }
 
-        private async void checkLoggedIn()
+        private async Task checkLoggedIn()
         {
             ClientInitializor.username = Xamarin.Essentials.Preferences.Get("username", "null");
             ClientInitializor.password = Xamarin.Essentials.Preferences.Get("password", "null");
 
-            if(ClientInitializor.username != "null")
+            Device.BeginInvokeOnMainThread(() =>
             {
-                await Task.Run(() => DoLogin());
+                indicator.IsVisible = true;
+                indicator.IsEnabled = true;
+                indicator.IsRunning = true;
+            });
+
+            if (ClientInitializor.username != "null")
+            {
+                await DataFetcher.AttemptLogIn();
 
                 if (DataFetcher.loggedIn)
                 {
                     LoggedIn = true;
-
                     if (Device.RuntimePlatform == Device.iOS)
                     {
                         await Navigation.PopToRootAsync();
                     }
-                    Application.Current.MainPage = new NavigationPage(new GradesPage());
+
+                    Device.BeginInvokeOnMainThread(() => {
+                        Application.Current.MainPage = new NavigationPage(new GradesPage());
+                        ((NavigationPage)Application.Current.MainPage).BarBackgroundColor = g1;
+
+                    });
+                    //Application.Current.MainPage = new NavigationPage(new GradesPage());
                     //await Navigation.PushModalAsync(new GradesPage());
-                    ((NavigationPage)Application.Current.MainPage).BarBackgroundColor = g1;
+                    //((NavigationPage)Application.Current.MainPage).BarBackgroundColor = g1;
                 }
                 else
                 {
-                    usnHolder.Hint = "Incorrect Username or Password";
-                    usnHolder.FocusedColor = Color.Red;
-                    usnHolder.Focus();
-                    pwd.Text = "";
-                    usn.Text = "";
-                    acceptTOS.IsChecked = false;
-                    LoginButton.IsEnabled = true;
-                    await LoginButton.FadeTo(1, 300);
 
-                    LoginButton.IsVisible = true;
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        usnHolder.Hint = "Incorrect Username or Password";
+                        usnHolder.FocusedColor = Color.Red;
+                        usnHolder.Focus();
+                        pwd.Text = "";
+                        usn.Text = "";
+                        acceptTOS.IsChecked = false;
+                        LoginButton.IsEnabled = true;
+                        LoginButton.FadeTo(1, 300);
 
-                    indicator.IsVisible = false;
-                    indicator.IsEnabled = false;
-                    indicator.IsRunning = false;
+                        LoginButton.IsVisible = true;
+
+                        indicator.IsVisible = false;
+                        indicator.IsEnabled = false;
+                        indicator.IsRunning = false;
+                    });
                 }
             }
         }
