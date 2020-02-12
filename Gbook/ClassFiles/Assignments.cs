@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Gbook.Methods;
@@ -49,6 +50,7 @@ namespace Gbook.ClassFiles
             {
                 possible = value;
                 this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
+                this.Percent = ((this.Points / this.Possible) * 100);
                 RaisedOnPropertyChanged("Possible");
             }
         }
@@ -61,6 +63,7 @@ namespace Gbook.ClassFiles
             {
                 points = value;
                 this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
+                this.Percent = ((this.Points / this.Possible) * 100);
                 RaisedOnPropertyChanged("Points");
             }
         }
@@ -84,6 +87,9 @@ namespace Gbook.ClassFiles
             set
             {
                 catIndex = value;
+
+
+
                 RaisedOnPropertyChanged("CatIndex");
             }
         }

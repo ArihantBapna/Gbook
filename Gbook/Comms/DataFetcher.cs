@@ -79,16 +79,6 @@ namespace Gbook.Comms
 
                 var Cats = await SetCategoriesDataAsync(c.SectionId, c.Termid);
 
-                if (Cats.Count > 1)
-                {
-                    CategoryInfo finalCat = new CategoryInfo();
-                    finalCat.Description = "Overall";
-                    finalCat.Percent = obj.OverallPercent;
-                    finalCat.Weight = 100;
-                    Cats.Add(finalCat);
-
-                }
-
                 foreach (CategoryInfo cats1 in Cats)
                 {
                     cats1.WeightPercent = (cats1.Percent * cats1.Weight) / 100;
@@ -107,7 +97,11 @@ namespace Gbook.Comms
                     {
                         asses.Percent = 100;
                     }
+                    
                 }
+
+
+
                 foreach(Assignments asses in Asss)
                 {
                     int counter = 0;
@@ -116,15 +110,45 @@ namespace Gbook.Comms
                         if (cats2.Description == asses.AssignmentType)
                         {
                             asses.CatIndex = counter;
+                            asses.Weight = cats2.Weight;
                         }
                         counter += 1;
+                    }
+                    if (asses.AssignmentType.Contains("Ungraded"))
+                    {
+                        Console.WriteLine("Ungraded found: ");
+                        asses.AssignmentType = "Ungraded";
+                        asses.Weight = 0;
+                        asses.CatIndex = (counter);
                     }
 
                     asses.BackColor = ColorGet.ColorFromPercent((int)Math.Round(asses.Percent, 0));
                 }
 
                 obj.NoOfCat = Cats.Count;
-                obj.CatInfoSet = Cats;
+                obj.UCatInfoSet = Cats;
+
+                List<CategoryInfo> tempCats = new List<CategoryInfo>();
+                foreach(CategoryInfo cats3 in Cats)
+                {
+                    if(cats3.PointsPossible != 0)
+                    {
+                        tempCats.Add(cats3);
+                    }
+                }
+                if (tempCats.Count > 1)
+                {
+                    CategoryInfo finalCat = new CategoryInfo();
+                    finalCat.Description = "Overall";
+                    finalCat.Percent = obj.OverallPercent;
+                    finalCat.Weight = 100;
+                    finalCat.WeightPercent = obj.OverallPercent;
+                    tempCats.Add(finalCat);
+
+                }
+
+                obj.CatInfoSet = tempCats;
+                
                 obj.AssignmentsList = Asss;
 
                 Globals.Dataset.Add(obj);
@@ -212,10 +236,13 @@ namespace Gbook.Comms
                         if (!string.IsNullOrEmpty(y.Description))
                         {
                             y.Description = Regex.Replace(y.Description, "[^a-zA-Z]", "");
+                            /*
                             if ((int)y.PointsPossible != 0)
                             {
                                 CatInfoCleaned.Add(y);
                             }
+                            */
+                            CatInfoCleaned.Add(y);
 
                         }
                     }

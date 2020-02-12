@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" xmlns:syncfusion1="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" x:Class="Gbook.AssignmentsPage">
-    <Grid>
+    <Grid x:Name="mainHold">
         <gradient:SfGradientView>
             <gradient:SfGradientView.BackgroundBrush>           
                 <gradient:SfLinearGradientBrush>                
@@ -11,12 +11,18 @@
                 </gradient:SfLinearGradientBrush>            
             </gradient:SfGradientView.BackgroundBrush>
         </gradient:SfGradientView>
-        <StackLayout x:Name="ShimmerField" VerticalOptions="FillAndExpand" Orientation="Vertical">
-            <StackLayout VerticalOptions="Start">
-                <Label Text="This is some text"></Label>
-            </StackLayout>
+        <StackLayout x:Name="ShimmerField" VerticalOptions="FillAndExpand">
             <StackLayout x:Name="Holder" VerticalOptions="StartAndExpand">
-                <syncfusion1:SfListView x:Name="AssList" android:ListView.IsFastScrollEnabled="false"></syncfusion1:SfListView>
+                <Grid VerticalOptions="StartAndExpand">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                </Grid>
+                <StackLayout x:Name="overallScore" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                    <Label Text="Overall Score" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" TextColor="White" FontAttributes="Bold" FontSize="Medium"></Label>
+                    <Frame x:Name="borderFrame" Margin="10" Padding="0" WidthRequest="50" HeightRequest="75" VerticalOptions="CenterAndExpand" HorizontalOptions="End"></Frame>
+                </StackLayout>
+                <syncfusion1:SfListView x:Name="AssList" android:ListView.IsFastScrollEnabled="false" VerticalOptions="StartAndExpand" ></syncfusion1:SfListView>
             </StackLayout>
         </StackLayout>
     </Grid>

@@ -74,7 +74,7 @@ namespace Gbook.ViewModel
 
         public int NoOfCat { get; set; }
         public List<CategoryInfo> CatInfoSet { get; set; }
-
+        public List<CategoryInfo> UCatInfoSet { get; set; }
         private ObservableCollection<Assignments> assignmentsList { get; set; }
         public ObservableCollection<Assignments> AssignmentsList
         {
