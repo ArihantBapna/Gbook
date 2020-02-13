@@ -7,6 +7,8 @@ using Gbook.ClassFiles;
 using Gbook.Converters;
 using Gbook.Methods;
 using Gbook.ViewModel;
+using Syncfusion.ListView.XForms;
+using Syncfusion.SfChart.XForms;
 using Syncfusion.SfNumericTextBox.XForms;
 using Syncfusion.XForms.ComboBox;
 using Xamarin.Forms;
@@ -16,11 +18,14 @@ namespace Gbook
     public partial class AssignmentsPage : ContentPage
     {
 
-        private static ObservableCollection<Assignments> Asses;
+        private static ObservableCollection<Assignments> Asses = new ObservableCollection<Assignments>();
         private static List<string> Cats = new List<string>();
+
+        private static ObservableCollection<CategoriesBox> catBoxes = new ObservableCollection<CategoriesBox>();
 
         private static OverallTracker Ot = new OverallTracker();
         private static List<double> CatsOverall = new List<double>();
+        public static  SfComboBox cat = new SfComboBox();
         private static double oPa = 0;
 
         public AssignmentsPage()
@@ -31,6 +36,7 @@ namespace Gbook
 
             oPa = 0;
             CatsOverall.Clear();
+            catBoxes.Clear();
 
             double heightSide = Application.Current.MainPage.Height;
             AssList.HeightRequest = heightSide;
@@ -56,58 +62,122 @@ namespace Gbook
             Cats.Clear();
             this.Title = Globals.SelectedData.CourseName;
             AssList.ItemsSource = Asses;
+            int count = 0;
             foreach(CategoryInfo c in Globals.SelectedData.UCatInfoSet)
             {
+                CategoriesBox b = new CategoriesBox();
+                b.Id = count;
+                //b.Weight = c.Weight;
+                b.Description = c.Description;
+                //b.CatPoints = c.PointsEarned;
+                //b.CatPossible = c.PointsPossible;
+                //b.Percent = c.Percent;
+
+                catBoxes.Add(b);
+
                 Cats.Add(c.Description);
+                count += 1;
             }
-            Cats.Add("Ungraded");
         }
 
         private void SetOverallDescription()
         {
-            
+            /*
             double netWeight = 0;
             List<CategoryInfo> unboundCats = Globals.SelectedData.UCatInfoSet;
-            
-            foreach(CategoryInfo cats in unboundCats)
+
+            foreach (CategoryInfo cats in unboundCats)
             {
                 var a = Asses.Where(x => x.Weight == cats.Weight);
                 double totPoints = 0;
-                foreach(Assignments ass in a)
+                foreach (Assignments ass in a)
                 {
                     totPoints += ass.Points;
                 }
-                if(cats.PointsPossible > 0)
+                if (cats.PointsPossible > 0)
                 {
                     oPa = oPa + (totPoints / cats.PointsPossible) * cats.Weight;
                     netWeight += cats.Weight;
                     CatsOverall.Add(((totPoints / cats.PointsPossible) * 100));
                 }
-                Console.WriteLine(cats.Description +":=" +oPa);
             }
+            */
+
             /*
              * x/a = y/100
              * 100x = ay
              * y = 100x/a
              */
             //Color c = ColorGet.ColorFromPercent((int)Math.Round(oPa, 0));
-            
+            UpdateOverallScore();
             borderFrame.BindingContext = Ot;
-            StackLayout score = new StackLayout() { VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.End };
-            Label scoreLabel = new Label() { TextColor = Color.White, FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment= TextAlignment.Center };
-            scoreLabel.SetBinding(Label.TextProperty, new Binding("OverallAll"));
+            StackLayout score = new StackLayout() { VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.Center };
+            Label scoreLabel = new Label() { TextColor = Color.White, FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Center, HorizontalOptions = LayoutOptions.Center };
+            Binding b = new Binding("OverallAll");
+            b.StringFormat = "{0}%";
+            scoreLabel.SetBinding(Label.TextProperty, b);
             score.Children.Add(scoreLabel);
             borderFrame.Content = score;
             borderFrame.SetBinding(Frame.BackgroundColorProperty, new Binding("OverallColor"));
             borderFrame.Parent = overallScore;
 
+
+            StackLayout Holder = new StackLayout();
+            SfChart chart = new SfChart() { HeightRequest = 150, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = Application.Current.MainPage.Width };
+            //Initializing Primary Axis
+            chart.BindingContext = Globals.SelectedData;
+            CategoryAxis primaryAxis = new CategoryAxis();
+            
+            //Initializing Secondary Axis
+            NumericalAxis secondaryAxis = new NumericalAxis() { Minimum = 0, Maximum = 100, Interval = 20, RangePadding =NumericalPadding.None};
+            chart.SecondaryAxis = secondaryAxis;
+            chart.PrimaryAxis = primaryAxis;
+            //chart.BindingContext = catBoxes;
+            StackingBarSeries series2 = new StackingBar100Series()
+            {
+                ItemsSource = Globals.SelectedData.CatInfoSet,
+                XBindingPath = "Description",
+                YBindingPath = "Weight",
+                Color = Color.Transparent
+            };
+
+            StackingBarSeries series1 = new StackingBar100Series()
+            {
+                ItemsSource = Globals.SelectedData.CatInfoSet,
+                XBindingPath = "Description",
+                YBindingPath = "WeightPercent",
+                Color = Color.Transparent
+            };
+            series2.Color = Xamarin.Forms.Color.Transparent;
+            series2.StrokeColor = Color.White;
+            series2.StrokeWidth = 0.3;
+            series2.EnableAnimation = true;
+            series2.AnimationDuration = 0.8;
+            series2.Color = Color.Transparent;
+            series2.DataMarker = new ChartDataMarker();
+
+            series1.Color = Color.Wheat;
+            series1.StrokeColor = Color.Blue;
+            series1.StrokeWidth = 0.3;
+            series1.EnableAnimation = true;
+            series1.AnimationDuration = 0.8;
+            //series2.DataMarker = new ChartDataMarker();
+
+            chart.Series.Add(series1);
+            chart.Series.Add(series2);
+
+            Holder.Children.Add(chart);
+            CategoryHolder.Children.Add(Holder);
+            
+
+            /*
             oPa = (oPa * 100) / netWeight;
             oPa = Math.Round(oPa, 2);
             Ot.OverallInCats = CatsOverall;
             Ot.OverallColor = ColorGet.ColorFromPercent((int)Math.Round(oPa, 0));
             Ot.OverallAll = oPa;
+            */
         }
-
 
 
         private void ListTemplate()
@@ -125,10 +195,13 @@ namespace Gbook
             l.SetBinding(Label.TextProperty, new Binding("Description"));
 
             StackLayout subMain = new StackLayout() { Spacing = 0, Margin = 0, Padding = 0, HorizontalOptions = LayoutOptions.FillAndExpand ,Orientation = StackOrientation.Horizontal, VerticalOptions = LayoutOptions.CenterAndExpand };
-            SfComboBox cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = 220, HeightRequest = 50, TextColor = Color.White, VerticalOptions=LayoutOptions.CenterAndExpand };
+            subMain.SetBinding(Element.AutomationIdProperty, new Binding("Id"));
+            cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = 220, HeightRequest = 50, TextColor = Color.White, VerticalOptions=LayoutOptions.CenterAndExpand };
             cat.ComboBoxSource = Cats;
             cat.IsEditableMode = false;
-            
+            cat.SetBinding(SfComboBox.SelectedValueProperty, new Binding("Description"));
+            cat.SelectionChanged += ComboBox_SelectionChanged;
+
             Binding catBinding = new Binding("CatIndex");
             cat.SetBinding(SfComboBox.SelectedIndexProperty, catBinding);
             cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType"));
@@ -171,29 +244,89 @@ namespace Gbook
             return MainGrid;
             });
         }
-
-        private void Handle_ValueChanged(object sender, System.EventArgs e)
+        private void ComboBox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
         {
+            
+            if (Globals.SelectedData != null && Globals.SelectedData.UCatInfoSet.Count > 0)
+            {
+                int r = cat.SelectedIndex;
+                SfComboBox temp = (SfComboBox)sender;
+                var x = temp.Parent;
+                int id = 0;
+                if (int.TryParse(x.AutomationId, out id))
+                {
+                    Asses[id].AssignmentType = catBoxes[temp.SelectedIndex].Description;
+                    Asses[id].Weight = catBoxes[temp.SelectedIndex].Weight;
+                    //Console.WriteLine("Selected: " +temp.SelectedIndex);
+                    //Console.WriteLine("Weight: " +catBoxes[temp.SelectedIndex].Weight);
+                }
+                UpdateOverallScore();
+            }
+            
+        }
+
+        private static void InitCatList()
+        {
+            if (catBoxes.Count > 0)
+            {
+                catBoxes.Clear();
+            }
+            
+            int count = 0;
+            foreach (CategoryInfo c in Globals.SelectedData.UCatInfoSet)
+            {
+                CategoriesBox b = new CategoriesBox();
+                b.Id = count;
+                //b.Weight = c.Weight;
+                b.Description = c.Description;
+                //b.CatPoints = c.PointsEarned;
+                //b.CatPossible = c.PointsPossible;
+                //b.Percent = c.Percent;
+
+                catBoxes.Add(b);
+
+                count += 1;
+            }
+            Console.WriteLine("filled the list " +catBoxes.Count());
+        }
+
+        private static void UpdateOverallScore()
+        {
+            //Console.WriteLine("Updating index score");
             oPa = 0;
             CatsOverall.Clear();
             double netWeight = 0;
             List<CategoryInfo> unboundCats = Globals.SelectedData.UCatInfoSet;
-            foreach (CategoryInfo cats in unboundCats)
+            //Console.WriteLine("Clearing the list");
+            
+            Console.WriteLine("Filling the list");
+            InitCatList();
+            /*
+            foreach (CategoryInfo cats in unboundCats.Where(x => x.Weight > 0 && x.Description != "Ungraded"))
             {
+                //Console.WriteLine(cats.Description);
                 var a = Asses.Where(x => x.Weight == cats.Weight);
                 double totPoints = 0;
                 foreach (Assignments ass in a)
                 {
                     totPoints += ass.Points;
                 }
-                if (cats.PointsPossible > 0)
+                if (cats.PointsPossible > 0 && cats.Weight > 0)
                 {
-                    oPa = oPa + (totPoints / cats.PointsPossible) * cats.Weight;
+                    oPa += (totPoints / cats.PointsPossible) * cats.Weight;
                     netWeight += cats.Weight;
                     CatsOverall.Add(((totPoints / cats.PointsPossible) * 100));
-
+                    //Console.WriteLine("Overall points: " +oPa);
+                    //Console.WriteLine("Net Weight: " + netWeight);
+                    
                 }
-                Console.WriteLine(cats.Description + ":=" + oPa);
+                //Console.WriteLine("Finished category");
+                //Console.WriteLine("----------");
+            }
+
+            foreach(double d in CatsOverall)
+            {
+                //Console.WriteLine("Category score: " + d);
             }
             oPa = (oPa * 100) / netWeight;
             oPa = Math.Round(oPa, 2);
@@ -201,8 +334,40 @@ namespace Gbook
             Ot.OverallAll = oPa;
             Ot.OverallColor = ColorGet.ColorFromPercent((int)Math.Round(oPa, 0));
             Ot.OverallInCats = CatsOverall;
+            for(int i = 0; i < CatsOverall.Count; i++)
+            {
+                catBoxes[i].Percent = CatsOverall[i];
+            }
+            */
+            Console.WriteLine("Writing assignments");
+            foreach (Assignments a in Asses)
+            {
+                if(a.Grade != "")
+                {
+                    foreach(CategoriesBox cb1 in catBoxes)
+                    {
+                        if(cb1.Description == a.AssignmentType)
+                        {
+                            cb1.CatPossible += a.Possible;
+                            cb1.CatPoints += a.Points;
+                            cb1.Percent = (cb1.CatPoints / cb1.CatPossible) * 100;
+                            Console.WriteLine("---------------");
+                            Console.WriteLine("\t" + cb1.CatPoints);
+                            Console.WriteLine("---------------");
+                            break;
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("Done doing everything \n \n ----------------");
 
+            //Console.WriteLine("");
+            //Console.WriteLine("");
+        }
 
+        private void Handle_ValueChanged(object sender, System.EventArgs e)
+        {
+            UpdateOverallScore();
         }
     }
 }

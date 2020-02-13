@@ -9,6 +9,17 @@ namespace Gbook.ClassFiles
 {
     public class Assignments : INotifyPropertyChanged
     {
+        private int id { get; set; }
+        public int Id
+        {
+            get { return id; }
+            set
+            {
+                id = value;
+                RaisedOnPropertyChanged("Id");
+            }
+        }
+
         private string description { get; set; }
         public string Description
         {
@@ -87,9 +98,6 @@ namespace Gbook.ClassFiles
             set
             {
                 catIndex = value;
-
-
-
                 RaisedOnPropertyChanged("CatIndex");
             }
         }

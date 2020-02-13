@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Gbook.ClassFiles;
@@ -100,8 +101,10 @@ namespace Gbook.Comms
                     
                 }
 
-
-
+                for(int i = 0; i < Asss.Count; i++)
+                {
+                    Asss[i].Id = i;
+                }
                 foreach(Assignments asses in Asss)
                 {
                     int counter = 0;
@@ -116,13 +119,19 @@ namespace Gbook.Comms
                     }
                     if (asses.AssignmentType.Contains("Ungraded"))
                     {
-                        Console.WriteLine("Ungraded found: ");
                         asses.AssignmentType = "Ungraded";
                         asses.Weight = 0;
                         asses.CatIndex = (counter);
                     }
 
                     asses.BackColor = ColorGet.ColorFromPercent((int)Math.Round(asses.Percent, 0));
+                }
+                if (Asss.Where(x => x.AssignmentType.Contains("Ungraded")).Count() > 0)
+                {
+                    CategoryInfo uCat = new CategoryInfo();
+                    uCat.Description = "Ungraded";
+                    uCat.Weight = 0;
+                    Cats.Add(uCat);
                 }
 
                 obj.NoOfCat = Cats.Count;
