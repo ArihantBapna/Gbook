@@ -62,6 +62,7 @@ namespace Gbook.ClassFiles
                 possible = value;
                 this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
                 this.Percent = ((this.Points / this.Possible) * 100);
+                EvaluateGrade();
                 RaisedOnPropertyChanged("Possible");
             }
         }
@@ -75,10 +76,25 @@ namespace Gbook.ClassFiles
                 points = value;
                 this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
                 this.Percent = ((this.Points / this.Possible) * 100);
+                EvaluateGrade();
                 RaisedOnPropertyChanged("Points");
             }
         }
 
+        private void EvaluateGrade()
+        {
+            if(this.Grade == "NG")
+            {
+                if(this.Points != 0)
+                {
+                    this.Grade = GradeFromScore.GetGrade(Percent);
+                }
+            }
+            else
+            {
+                this.Grade = GradeFromScore.GetGrade(Percent);
+            }
+        }
 
         private double weight { get; set; }
         public double Weight

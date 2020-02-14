@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Xamarin.Forms;
 
@@ -37,6 +38,17 @@ namespace Gbook.ViewModel
             {
                 overallColor = value;
                 RaisedOnPropertyChanged("OverallColor");
+            }
+        }
+
+        private ObservableCollection<CategoriesBox> catsOverall { get; set; }
+        public ObservableCollection<CategoriesBox> CatsOverall
+        {
+            get { return catsOverall; }
+            set
+            {
+                catsOverall = value;
+                RaisedOnPropertyChanged("CatsOverall");
             }
         }
 

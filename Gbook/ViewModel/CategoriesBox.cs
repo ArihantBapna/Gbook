@@ -61,6 +61,17 @@ namespace Gbook.ViewModel
             }
         }
 
+        private double weightPercent { get; set; }
+        public double WeightPercent
+        {
+            get { return WeightPercent; }
+            set
+            {
+                weightPercent = value;
+                RaisedOnPropertyChanged("WeightPercent");
+            }
+        }
+
         private double percent { get; set; }
         public double Percent
         {

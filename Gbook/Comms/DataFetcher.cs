@@ -90,6 +90,10 @@ namespace Gbook.Comms
                 foreach (Assignments asses in Asss)
                 {
                     asses.AssignmentType = Regex.Replace(asses.AssignmentType, "[^a-zA-Z]", "");
+                    if(asses.Grade == "" && asses.Points == 0)
+                    {
+                        asses.Grade = "NG";
+                    }
                     if (Math.Abs(asses.Possible) > 0)
                     {
                         asses.Percent = (asses.Points / asses.Possible) * 100;

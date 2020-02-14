@@ -21,7 +21,7 @@
                 <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
                     <StackLayout x:Name="overallScore" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Orientation="Horizontal">
                         <Label Text="Overall Score" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" TextColor="White" FontAttributes="Bold" FontSize="Medium"></Label>
-                        <Frame x:Name="borderFrame" Margin="0" Padding="0" WidthRequest="90" HeightRequest="75" VerticalOptions="CenterAndExpand" HorizontalOptions="End"></Frame>
+                        <Frame x:Name="borderFrame" Margin="0" Padding="0" WidthRequest="70" HeightRequest="50" VerticalOptions="CenterAndExpand" HorizontalOptions="End"></Frame>
                     </StackLayout>
                     <StackLayout x:Name="CategoryHolder" VerticalOptions="CenterAndExpand" Orientation="Vertical">
                     </StackLayout>
