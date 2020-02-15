@@ -214,6 +214,14 @@ namespace Gbook
             cat.SetBinding(SfComboBox.SelectedValueProperty, new Binding("Description"));
             cat.SelectionChanged += ComboBox_SelectionChanged;
 
+            DropDownButtonSettings dropDownButtonSettings = new DropDownButtonSettings();
+            dropDownButtonSettings.Height = 20;
+            dropDownButtonSettings.Width = 20;
+            dropDownButtonSettings.HighlightedBackgroundColor = Color.White;
+            dropDownButtonSettings.BackgroundColor = Color.Transparent;
+            dropDownButtonSettings.HighlightFontColor = Color.Black;
+            cat.DropDownButtonSettings = dropDownButtonSettings;
+            
             Binding catBinding = new Binding("CatIndex");
             cat.SetBinding(SfComboBox.SelectedIndexProperty, catBinding);
             cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType"));
