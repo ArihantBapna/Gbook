@@ -22,12 +22,11 @@ namespace Gbook
         private static List<string> Cats = new List<string>();
 
         private static ObservableCollection<CategoriesBox> catBoxes = new ObservableCollection<CategoriesBox>();
-
+        private static ChartColorModel ColorModel = new ChartColorModel();
         private static OverallTracker Ot = new OverallTracker();
         private static List<double> CatsOverall = new List<double>();
         public static  SfComboBox cat = new SfComboBox();
         private static double oPa = 0;
-        public ObservableCollection<CategoriesBox> nCatBox = new ObservableCollection<CategoriesBox>();
         public AssignmentsPage()
         {
             Asses = Globals.SelectedData.AssignmentsList;
@@ -123,54 +122,61 @@ namespace Gbook
 
 
             StackLayout Holder = new StackLayout();
-            SfChart chart = new SfChart() { HeightRequest = 150, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = Application.Current.MainPage.Width };
+            SfChart chart = new SfChart() { SideBySideSeriesPlacement = false, HeightRequest = 150, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = Application.Current.MainPage.Width };
             //Initializing Primary Axis
-            
-            foreach(CategoriesBox cv in catBoxes){
-                nCatBox.Add(cv);
-            }
+           
+            chart.SideBySideSeriesPlacement = false;
+            CategoryAxis primaryAxis = new CategoryAxis() { LabelStyle = new ChartAxisLabelStyle() { TextColor = Color.White } };
 
-            CategoryAxis primaryAxis = new CategoryAxis();
-            
             //Initializing Secondary Axis
-            NumericalAxis secondaryAxis = new NumericalAxis() { Minimum = 0, Maximum = 100, Interval = 20, RangePadding =NumericalPadding.None};
+            NumericalAxis secondaryAxis = new NumericalAxis() { Minimum = 0, Maximum = 100, Interval = 20, RangePadding = NumericalPadding.None, LabelStyle = new ChartAxisLabelStyle() { TextColor = Color.White } };
             chart.SecondaryAxis = secondaryAxis;
             chart.PrimaryAxis = primaryAxis;
             chart.BindingContext = Ot;
-            StackingBarSeries series2 = new StackingBar100Series()
+            BarSeries series2 = new BarSeries()
             {
                 XBindingPath = "Description",
-                YBindingPath = "CatPossible",
-                Color = Color.Transparent
+                YBindingPath = "WeightPercent"
             };
-            series2.SetBinding(StackingBarSeries.ItemsSourceProperty, new Binding("CatsOverall"));
-            StackingBarSeries series1 = new StackingBar100Series()
-            {
-                XBindingPath = "Description",
-                YBindingPath = "CatPoints",
-                Color = Color.Transparent
-            };
-            series1.SetBinding(StackingBarSeries.ItemsSourceProperty, new Binding("CatsOverall"));
-            series2.Color = Xamarin.Forms.Color.Transparent;
-            series2.StrokeColor = Color.White;
+            series2.SetBinding(ChartSeries.ItemsSourceProperty, new Binding("CatsOverall"));
+            series2.ColorModel = ColorModel;
+            series2.SetBinding(ChartSeries.ColorProperty, new Binding("CatColor"));
+            series2.SetBinding(BarSeries.StrokeColorProperty, new Binding("CatColor"));
             series2.StrokeWidth = 0.3;
             series2.EnableAnimation = true;
             series2.AnimationDuration = 0.8;
-            series2.Color = Color.Transparent;
-            series2.DataMarker = new ChartDataMarker();
+            ChartDataMarker cDm = new ChartDataMarker();
+            cDm.LabelTemplate = new DataTemplate(() =>
+            {
+                StackLayout layout = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0 };
+                Label l1 = new Label() { TextColor = Color.White, FontSize = 10f };
+                l1.SetBinding(Label.TextProperty, new Binding("WeightPercent"));
+                Label l2 = new Label() { TextColor = Color.White, FontSize = 10f };
+                l2.SetBinding(Label.TextProperty, new Binding("Weight", stringFormat: "/{0}"));
+                layout.Children.Add(l1);
+                layout.Children.Add(l2);
+                return layout;
+            });
+            cDm.LabelStyle.TextColor = Color.White;
+            series2.DataMarker = cDm;
+
+            BarSeries series1 = new BarSeries()
+            {
+                XBindingPath = "Description",
+                YBindingPath = "Weight",
+            };
+            series1.SetBinding(ChartSeries.ItemsSourceProperty, new Binding("CatsOverall"));
+            series1.StrokeColor = Color.White;
+            series1.StrokeWidth = 0.3;
+            series1.EnableAnimation = true;
+            series1.AnimationDuration = 0.8;
+            series1.Color = Color.Transparent;
 
             series1.ListenPropertyChange = true;
             series2.ListenPropertyChange = true;
 
-            series1.Color = Color.Wheat;
-            series1.StrokeColor = Color.Blue;
-            series1.StrokeWidth = 0.3;
-            series1.EnableAnimation = true;
-            series1.AnimationDuration = 0.8;
-            //series2.DataMarker = new ChartDataMarker();
-
-            chart.Series.Add(series1);
             chart.Series.Add(series2);
+            chart.Series.Add(series1);
 
             Holder.Children.Add(chart);
             CategoryHolder.Children.Add(Holder);
@@ -358,6 +364,7 @@ namespace Gbook
                             cb1.CatPossible += a.Possible;
                             cb1.CatPoints += a.Points;
                             cb1.Percent = (cb1.CatPoints / cb1.CatPossible);
+
                             Console.WriteLine("Category: " + cb1.Description);
                             Console.WriteLine("\t" + cb1.CatPossible);
                             Console.WriteLine("---------------");
@@ -377,12 +384,45 @@ namespace Gbook
                 Ot.OverallAll += cb1.Percent * cb1.Weight;
                 if(cb1.Weight > 0 && cb1.CatPossible > 0)
                 {
-                    tempCats.Add(cb1);
+                    CategoriesBox cbTemp = new CategoriesBox();
+                    cbTemp.CatPoints = cb1.CatPoints;
+                    cbTemp.Percent = Math.Round(cb1.Percent, 2);
+                    cbTemp.CatPossible = cb1.CatPossible;
+                    cbTemp.Weight = cb1.Weight;
+                    cbTemp.Description = cb1.Description;
+                    cbTemp.WeightPercent = Math.Round((cbTemp.Percent * cbTemp.Weight), 2);
+                    cbTemp.DelWeight = cbTemp.Weight - cbTemp.WeightPercent;
+                    cbTemp.CatColor = ColorGet.ColorFromPercent((int)Math.Round(cbTemp.Percent * 100, 0));
+                    Console.WriteLine("Color : " + cbTemp.CatColor);
+                    tempCats.Add(cbTemp);
                     netWeight += cb1.Weight;
                     Console.WriteLine("Weight: " + netWeight);
                 }
             }
             Ot.OverallAll = Math.Round((100 * Ot.OverallAll) / netWeight, 2);
+
+            if(catBoxes.Count >= 2)
+            {
+                if(tempCats.Count >= 2)
+                {
+                    CategoriesBox overall = new CategoriesBox();
+                    overall.Percent = Ot.OverallAll;
+                    overall.Weight = 100;
+                    overall.Description = "Overall";
+                    overall.WeightPercent = overall.Percent;
+                    overall.CatColor = ColorGet.ColorFromPercent((int)Math.Round(Ot.OverallAll, 0));
+
+                    tempCats.Add(overall);
+                }
+
+            }
+            ColorModel.Palette = ChartColorPalette.Custom;
+            ChartColorCollection cmc = new ChartColorCollection();
+            foreach (CategoriesBox cv in tempCats)
+            {
+                cmc.Add(cv.CatColor);
+            }
+            ColorModel.CustomBrushes = cmc;
             Ot.OverallColor = ColorGet.ColorFromPercent((int)Math.Round(Ot.OverallAll, 0));
             Ot.CatsOverall = tempCats;
             //Console.WriteLine("");

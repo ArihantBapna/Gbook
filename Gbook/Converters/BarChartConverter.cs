@@ -94,6 +94,13 @@ namespace Gbook.Converters
                         }
                         return -1;
                     }
+                case 7:
+                    {
+                        d = (double)value;
+                        d *= 100;
+                        Console.WriteLine("Color double=>" +d);
+                        return ColorGet.ColorFromPercent((int)Math.Round(d, 0));
+                    }
 
             }
         }
