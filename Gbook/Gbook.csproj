@@ -29,6 +29,7 @@
     <PackageReference Include="Syncfusion.Xamarin.SfProgressBar" Version="17.4.0.49" />
     <PackageReference Include="Syncfusion.Xamarin.SfMaskedEdit" Version="17.4.0.49" />
     <PackageReference Include="Syncfusion.Xamarin.SfNumericTextBox" Version="17.4.0.49" />
+    <PackageReference Include="Syncfusion.Xamarin.SfNumericUpDown" Version="17.4.0.49" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClassFiles\" />

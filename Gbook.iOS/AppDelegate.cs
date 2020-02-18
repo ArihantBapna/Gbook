@@ -9,6 +9,7 @@ using Foundation;
 using UIKit;
 using Syncfusion.XForms.iOS.MaskedEdit;
 using Syncfusion.SfNumericTextBox.XForms.iOS;
+using Syncfusion.SfNumericUpDown.XForms.iOS;
 
 namespace Gbook.iOS
 {
@@ -38,6 +39,9 @@ namespace Gbook.iOS
 
             //Numeric Text Box
             new SfNumericTextBoxRenderer();
+
+            //Numeric Up down
+            SfNumericUpDownRenderer.Init();
 
             //Load Sf List view
             SfListViewRenderer.Init();

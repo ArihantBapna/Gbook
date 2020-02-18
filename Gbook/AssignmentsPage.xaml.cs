@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,10 +8,12 @@ using Gbook.ClassFiles;
 using Gbook.Converters;
 using Gbook.Methods;
 using Gbook.ViewModel;
+using Syncfusion.DataSource;
 using Syncfusion.ListView.XForms;
 using Syncfusion.SfChart.XForms;
 using Syncfusion.SfNumericTextBox.XForms;
 using Syncfusion.XForms.ComboBox;
+using Syncfusion.XForms.TextInputLayout;
 using Xamarin.Forms;
 
 namespace Gbook
@@ -18,6 +21,7 @@ namespace Gbook
     public partial class AssignmentsPage : ContentPage
     {
 
+        private static ObservableCollection<Assignments> OgAsses;
         private static ObservableCollection<Assignments> Asses = new ObservableCollection<Assignments>();
         private static List<string> Cats = new List<string>();
 
@@ -29,8 +33,22 @@ namespace Gbook
         private static double oPa = 0;
         public AssignmentsPage()
         {
-            Asses = Globals.SelectedData.AssignmentsList;
-
+            Asses.Clear();
+            OgAsses = new ObservableCollection<Assignments>(Globals.SelectedData.AssignmentsList);
+            foreach (Assignments a in OgAsses)
+            {
+                Assignments b = new Assignments();
+                b.Points = a.Points;
+                b.Possible = a.Possible;
+                b.Description = a.Description;
+                b.AssignmentType = a.AssignmentType;
+                b.Percent = a.Percent;
+                b.CatIndex = a.CatIndex;
+                b.BackColor = a.BackColor;
+                b.Date = a.Date;
+                b.Grade = a.Grade;
+                Asses.Add(b);
+            }
             InitializeComponent();
 
             oPa = 0;
@@ -41,12 +59,52 @@ namespace Gbook
             AssList.HeightRequest = heightSide;
 
             SetGradient();
+            SetSwiping();
             InitList();
             ListTemplate();
             SetOverallDescription();
         }
 
-        private void SetGradient()
+        private void SetSwiping()
+        {
+            AssList.AllowSwiping = true;
+            AssList.SelectionMode = Syncfusion.ListView.XForms.SelectionMode.None;
+            AssList.SwipeOffset = 100;
+            AssList.SwipeThreshold = 70;
+            AssList.SwipeEnded += ListView_SwipeEnded;
+            AssList.RightSwipeTemplate = new DataTemplate(() =>
+            {
+                var grid = new Grid();
+
+                var grid1 = new Grid()
+                {
+                    BackgroundColor = Color.FromHex("#DC595F"),
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.CenterAndExpand
+                };
+                var deleteGrid = new Grid() { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center };
+                var l1 = new Label() { Text = "Delete", FontSize=18f, FontAttributes = FontAttributes.Bold, TextColor = Color.White}    ;
+                deleteGrid.Children.Add(l1);
+                grid1.Children.Add(deleteGrid);
+
+                grid.Children.Add(grid1);
+
+                return grid1;
+            });
+
+        }
+
+        private void ListView_SwipeEnded(object sender, Syncfusion.ListView.XForms.SwipeEndedEventArgs e)
+        {
+            if (e.SwipeOffset >= 100)
+            {
+                Asses.RemoveAt(e.ItemIndex);
+                AssList.ResetSwipe();
+                UpdateOverallScore();
+            }
+        }
+
+            private void SetGradient()
         {
             grad1.Color = LoginPage.g1;
             grad1.Offset = LoginPage.o1;
@@ -68,9 +126,6 @@ namespace Gbook
                 b.Id = count;
                 b.Weight = c.Weight;
                 b.Description = c.Description;
-                //b.CatPoints = c.PointsEarned;
-                //b.CatPossible = c.PointsPossible;
-                //b.Percent = c.Percent;
 
                 catBoxes.Add(b);
 
@@ -81,33 +136,7 @@ namespace Gbook
 
         private void SetOverallDescription()
         {
-            /*
-            double netWeight = 0;
-            List<CategoryInfo> unboundCats = Globals.SelectedData.UCatInfoSet;
-
-            foreach (CategoryInfo cats in unboundCats)
-            {
-                var a = Asses.Where(x => x.Weight == cats.Weight);
-                double totPoints = 0;
-                foreach (Assignments ass in a)
-                {
-                    totPoints += ass.Points;
-                }
-                if (cats.PointsPossible > 0)
-                {
-                    oPa = oPa + (totPoints / cats.PointsPossible) * cats.Weight;
-                    netWeight += cats.Weight;
-                    CatsOverall.Add(((totPoints / cats.PointsPossible) * 100));
-                }
-            }
-            */
-
-            /*
-             * x/a = y/100
-             * 100x = ay
-             * y = 100x/a
-             */
-            //Color c = ColorGet.ColorFromPercent((int)Math.Round(oPa, 0));
+ 
             UpdateOverallScore();
             borderFrame.BindingContext = Ot;
             StackLayout score = new StackLayout() { VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.Center };
@@ -227,22 +256,31 @@ namespace Gbook
             cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType"));
 
             StackLayout border = new StackLayout() {WidthRequest = 150, HeightRequest = 30, VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.EndAndExpand };
-            StackLayout score = new StackLayout() {Orientation = StackOrientation.Horizontal, WidthRequest=150, VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.CenterAndExpand };
+            StackLayout score = new StackLayout() {Orientation = StackOrientation.Horizontal, WidthRequest=150, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.CenterAndExpand };
 
-            SfNumericTextBox points =new SfNumericTextBox() { TextAlignment = TextAlignment.Center ,WidthRequest = 70, HorizontalOptions = LayoutOptions.Start, TextColor = Color.White};
-            points.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Points"));
-            points.SetBinding(BackgroundColorProperty, new Binding("BackColor"));
+            StackLayout holder1 = new StackLayout() { VerticalOptions = LayoutOptions.Center,HorizontalOptions=LayoutOptions.Center,WidthRequest = 70,HeightRequest=40 };
+            var inputLayout1 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.FillAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
+            SfNumericTextBox points =new SfNumericTextBox() { TextAlignment = TextAlignment.Center , VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
+            points.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Points", BindingMode.TwoWay));
+            inputLayout1.SetBinding(SfTextInputLayout.ContainerBackgroundColorProperty, new Binding("BackColor"));
             points.MaximumNumberDecimalDigits = 1;
             points.Completed += Handle_ValueChanged;
             points.Minimum = 0;
+            inputLayout1.InputView = points;
+            holder1.Children.Add(inputLayout1);
 
-            SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, WidthRequest = 70, HorizontalOptions = LayoutOptions.End, TextColor = Color.White};
-            possible.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Possible"));
-            possible.SetBinding(BackgroundColorProperty, new Binding("BackColor"));
+            StackLayout holder2 = new StackLayout() { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, WidthRequest = 70, HeightRequest = 40 };
+            var inputLayout2 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.FillAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
+            SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
+            possible.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Possible", BindingMode.TwoWay));
+            inputLayout2.SetBinding(SfTextInputLayout.ContainerBackgroundColorProperty, new Binding("BackColor"));
             possible.MaximumNumberDecimalDigits = 1;
             possible.Completed += Handle_ValueChanged;
-            score.Children.Add(points);
-            score.Children.Add(possible);
+            inputLayout2.InputView = possible;
+            holder2.Children.Add(inputLayout2);
+
+            score.Children.Add(holder1);
+            score.Children.Add(holder2);
              
             border.Children.Add(score);
             border.BackgroundColor = Color.Transparent;
@@ -308,59 +346,16 @@ namespace Gbook
 
                 count += 1;
             }
-            Console.WriteLine("filled the list " +catBoxes.Count());
         }
 
         private static void UpdateOverallScore()
         {
-            //Console.WriteLine("Updating index score");
             oPa = 0;
             double netWeight = 0;
             CatsOverall.Clear();
             List<CategoryInfo> unboundCats = Globals.SelectedData.UCatInfoSet;
-            //Console.WriteLine("Clearing the list");
-            
-            Console.WriteLine("Filling the list");
             InitCatList();
-            /*
-            foreach (CategoryInfo cats in unboundCats.Where(x => x.Weight > 0 && x.Description != "Ungraded"))
-            {
-                //Console.WriteLine(cats.Description);
-                var a = Asses.Where(x => x.Weight == cats.Weight);
-                double totPoints = 0;
-                foreach (Assignments ass in a)
-                {
-                    totPoints += ass.Points;
-                }
-                if (cats.PointsPossible > 0 && cats.Weight > 0)
-                {
-                    oPa += (totPoints / cats.PointsPossible) * cats.Weight;
-                    netWeight += cats.Weight;
-                    CatsOverall.Add(((totPoints / cats.PointsPossible) * 100));
-                    //Console.WriteLine("Overall points: " +oPa);
-                    //Console.WriteLine("Net Weight: " + netWeight);
-                    
-                }
-                //Console.WriteLine("Finished category");
-                //Console.WriteLine("----------");
-            }
 
-            foreach(double d in CatsOverall)
-            {
-                //Console.WriteLine("Category score: " + d);
-            }
-            oPa = (oPa * 100) / netWeight;
-            oPa = Math.Round(oPa, 2);
-
-            Ot.OverallAll = oPa;
-            Ot.OverallColor = ColorGet.ColorFromPercent((int)Math.Round(oPa, 0));
-            Ot.OverallInCats = CatsOverall;
-            for(int i = 0; i < CatsOverall.Count; i++)
-            {
-                catBoxes[i].Percent = CatsOverall[i];
-            }
-            */
-            Console.WriteLine("Writing assignments");
             foreach (Assignments a in Asses)
             {
                 if(a.Grade != "" && a.Grade != "NG")
@@ -372,20 +367,11 @@ namespace Gbook
                             cb1.CatPossible += a.Possible;
                             cb1.CatPoints += a.Points;
                             cb1.Percent = (cb1.CatPoints / cb1.CatPossible);
-
-                            Console.WriteLine("Category: " + cb1.Description);
-                            Console.WriteLine("\t" + cb1.CatPossible);
-                            Console.WriteLine("---------------");
                             break;
                         }
                     }
                 }
-                else
-                {
-                    Console.WriteLine("LOOOOK " + a.Description);
-                }
             }
-            Console.WriteLine("Done doing everything \n \n ----------------");
             ObservableCollection<CategoriesBox> tempCats = new ObservableCollection<CategoriesBox>();
             foreach(CategoriesBox cb1 in catBoxes)
             {
@@ -401,10 +387,8 @@ namespace Gbook
                     cbTemp.WeightPercent = Math.Round((cbTemp.Percent * cbTemp.Weight), 2);
                     cbTemp.DelWeight = cbTemp.Weight - cbTemp.WeightPercent;
                     cbTemp.CatColor = ColorGet.ColorFromPercent((int)Math.Round(cbTemp.Percent * 100, 0));
-                    Console.WriteLine("Color : " + cbTemp.CatColor);
                     tempCats.Add(cbTemp);
                     netWeight += cb1.Weight;
-                    Console.WriteLine("Weight: " + netWeight);
                 }
             }
             Ot.OverallAll = Math.Round((100 * Ot.OverallAll) / netWeight, 2);
@@ -433,12 +417,48 @@ namespace Gbook
             ColorModel.CustomBrushes = cmc;
             Ot.OverallColor = ColorGet.ColorFromPercent((int)Math.Round(Ot.OverallAll, 0));
             Ot.CatsOverall = tempCats;
-            //Console.WriteLine("");
-            //Console.WriteLine("");
         }
 
         private void Handle_ValueChanged(object sender, System.EventArgs e)
         {
+            UpdateOverallScore();
+        }
+
+        void addButton_Clicked(System.Object sender, System.EventArgs e)
+        {
+            Assignments newAss = new Assignments();
+            newAss.Description = "Added just now";
+            newAss.Date = DateTime.Now.ToString();
+            newAss.Points = 0;
+            newAss.Possible = 0;
+            newAss.AssignmentType = "Ungraded";
+            Asses.Insert(0,newAss);
+            UpdateOverallScore();
+        }
+
+        void resetButton_Clicked(System.Object sender, System.EventArgs e)
+        {
+            Console.WriteLine("resetting: -> ");
+            Console.WriteLine("Og count: " + OgAsses.Count() + " New count: " + Asses.Count());
+            Asses.Clear();
+            
+            foreach(Assignments a in OgAsses)
+            {
+                Assignments b = new Assignments();
+                b.Points = a.Points;
+                b.Possible = a.Possible;
+                b.Description = a.Description;
+                b.AssignmentType = a.AssignmentType;
+                b.Percent = a.Percent;
+                b.CatIndex = a.CatIndex;
+                b.BackColor = a.BackColor;
+                b.Date = a.Date;
+                b.Grade = a.Grade;
+                Asses.Add(b);
+             }
+
+            AssList.ItemsSource = null;
+            AssList.ItemsSource = Asses;
             UpdateOverallScore();
         }
     }
