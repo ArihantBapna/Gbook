@@ -105,12 +105,17 @@ namespace Gbook.ClassFiles
             {
                 if(this.Points != 0)
                 {
-                    this.Grade = GradeFromScore.GetGrade(Percent);
+                    //this.Grade = GradeFromScore.GetGrade(Percent);
+                    this.Grade = "Graded";
+                }
+                else
+                {
+                    this.Grade = "Z";
                 }
             }
             else
             {
-                this.Grade = GradeFromScore.GetGrade(Percent);
+                this.Grade = "Graded";
             }
         }
 

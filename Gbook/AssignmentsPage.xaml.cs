@@ -22,33 +22,23 @@ namespace Gbook
     {
 
         private static ObservableCollection<Assignments> OgAsses;
-        private static ObservableCollection<Assignments> Asses = new ObservableCollection<Assignments>();
+        private static ObservableCollection<Assignments> Asses;
         private static List<string> Cats = new List<string>();
 
         private static ObservableCollection<CategoriesBox> catBoxes = new ObservableCollection<CategoriesBox>();
         private static ChartColorModel ColorModel = new ChartColorModel();
         private static OverallTracker Ot = new OverallTracker();
         private static List<double> CatsOverall = new List<double>();
+        private static List<string> gradesPoss = new List<string>() { "Graded","NG","X","Z" };
         public static  SfComboBox cat = new SfComboBox();
+        public static SfComboBox gradeBox = new SfComboBox();
         private static double oPa = 0;
         public AssignmentsPage()
         {
+            Asses = new ObservableCollection<Assignments>();
             Asses.Clear();
             OgAsses = new ObservableCollection<Assignments>(Globals.SelectedData.AssignmentsList);
-            foreach (Assignments a in OgAsses)
-            {
-                Assignments b = new Assignments();
-                b.Points = a.Points;
-                b.Possible = a.Possible;
-                b.Description = a.Description;
-                b.AssignmentType = a.AssignmentType;
-                b.Percent = a.Percent;
-                b.CatIndex = a.CatIndex;
-                b.BackColor = a.BackColor;
-                b.Date = a.Date;
-                b.Grade = a.Grade;
-                Asses.Add(b);
-            }
+
             InitializeComponent();
 
             oPa = 0;
@@ -63,6 +53,25 @@ namespace Gbook
             InitList();
             ListTemplate();
             SetOverallDescription();
+
+            foreach (Assignments a in OgAsses)
+            {
+                Assignments b = new Assignments
+                {
+                    Points = a.Points,
+                    Possible = a.Possible,
+                    Description = a.Description,
+                    AssignmentType = a.AssignmentType,
+                    Percent = a.Percent,
+                    CatIndex = a.CatIndex,
+                    BackColor = a.BackColor,
+                    Date = a.Date,
+                    Grade = a.Grade
+                };
+                Asses.Add(b);
+            }
+
+            ResetData();
         }
 
         private void SetSwiping()
@@ -80,9 +89,9 @@ namespace Gbook
                 {
                     BackgroundColor = Color.FromHex("#DC595F"),
                     HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.CenterAndExpand
+                    VerticalOptions = LayoutOptions.FillAndExpand
                 };
-                var deleteGrid = new Grid() { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center };
+                var deleteGrid = new Grid() { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.FillAndExpand };
                 var l1 = new Label() { Text = "Delete", FontSize=18f, FontAttributes = FontAttributes.Bold, TextColor = Color.White}    ;
                 deleteGrid.Children.Add(l1);
                 grid1.Children.Add(deleteGrid);
@@ -120,6 +129,8 @@ namespace Gbook
             this.Title = Globals.SelectedData.CourseName;
             AssList.ItemsSource = Asses;
             int count = 0;
+
+
             foreach(CategoryInfo c in Globals.SelectedData.UCatInfoSet)
             {
                 CategoriesBox b = new CategoriesBox();
@@ -230,12 +241,12 @@ namespace Gbook
             {
             Grid MainGrid = new Grid() { VerticalOptions = LayoutOptions.StartAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromRgba(0, 0, 0, 0.5), Margin = new Thickness(0, 5), Padding = 0 };
 
-            StackLayout main = new StackLayout() {Spacing = 5, Margin = 0, Padding = 0, Orientation = StackOrientation.Vertical, VerticalOptions= LayoutOptions.Center, HorizontalOptions = LayoutOptions.FillAndExpand };
+            StackLayout main = new StackLayout() {Spacing = 5, Margin = 0, Padding = 0, Orientation = StackOrientation.Vertical, VerticalOptions= LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand };
 
             Label l = new Label() { TextColor = Color.White, FontSize = 17, FontAttributes = FontAttributes.Bold };
             l.SetBinding(Label.TextProperty, new Binding("Description"));
 
-            StackLayout subMain = new StackLayout() { Spacing = 0, Margin = 0, Padding = 0, HorizontalOptions = LayoutOptions.FillAndExpand ,Orientation = StackOrientation.Horizontal, VerticalOptions = LayoutOptions.CenterAndExpand };
+            StackLayout subMain = new StackLayout() { Spacing = 0, Margin = 0, Padding = 0, HorizontalOptions = LayoutOptions.FillAndExpand ,Orientation = StackOrientation.Horizontal, VerticalOptions = LayoutOptions.StartAndExpand };
             subMain.SetBinding(Element.AutomationIdProperty, new Binding("Id"));
             cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = 220, HeightRequest = 50, TextColor = Color.White, VerticalOptions=LayoutOptions.CenterAndExpand };
             cat.ComboBoxSource = Cats;
@@ -255,12 +266,12 @@ namespace Gbook
             cat.SetBinding(SfComboBox.SelectedIndexProperty, catBinding);
             cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType"));
 
-            StackLayout border = new StackLayout() {WidthRequest = 150, HeightRequest = 30, VerticalOptions = LayoutOptions.CenterAndExpand, HorizontalOptions = LayoutOptions.EndAndExpand };
-            StackLayout score = new StackLayout() {Orientation = StackOrientation.Horizontal, WidthRequest=150, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.CenterAndExpand };
+            StackLayout border = new StackLayout() {WidthRequest = 150, HeightRequest = 30, VerticalOptions = LayoutOptions.StartAndExpand, HorizontalOptions = LayoutOptions.End, Margin = new Thickness(0,5) };
+            StackLayout score = new StackLayout() {Orientation = StackOrientation.Horizontal, WidthRequest=150, VerticalOptions = LayoutOptions.StartAndExpand, HorizontalOptions = LayoutOptions.CenterAndExpand };
 
-            StackLayout holder1 = new StackLayout() { VerticalOptions = LayoutOptions.Center,HorizontalOptions=LayoutOptions.Center,WidthRequest = 70,HeightRequest=40 };
-            var inputLayout1 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.FillAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
-            SfNumericTextBox points =new SfNumericTextBox() { TextAlignment = TextAlignment.Center , VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
+            StackLayout holder1 = new StackLayout() { VerticalOptions = LayoutOptions.Start,HorizontalOptions=LayoutOptions.Center,WidthRequest = 85,HeightRequest=40 };
+            var inputLayout1 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.StartAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
+            SfNumericTextBox points =new SfNumericTextBox() { TextAlignment = TextAlignment.Center , VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
             points.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Points", BindingMode.TwoWay));
             inputLayout1.SetBinding(SfTextInputLayout.ContainerBackgroundColorProperty, new Binding("BackColor"));
             points.MaximumNumberDecimalDigits = 1;
@@ -269,9 +280,9 @@ namespace Gbook
             inputLayout1.InputView = points;
             holder1.Children.Add(inputLayout1);
 
-            StackLayout holder2 = new StackLayout() { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, WidthRequest = 70, HeightRequest = 40 };
-            var inputLayout2 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.FillAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
-            SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
+            StackLayout holder2 = new StackLayout() { VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Center, WidthRequest = 85, HeightRequest = 40 };
+            var inputLayout2 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.StartAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
+            SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
             possible.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Possible", BindingMode.TwoWay));
             inputLayout2.SetBinding(SfTextInputLayout.ContainerBackgroundColorProperty, new Binding("BackColor"));
             possible.MaximumNumberDecimalDigits = 1;
@@ -288,20 +299,46 @@ namespace Gbook
             subMain.Children.Add(cat);
             subMain.Children.Add(border);
 
+            StackLayout last = new StackLayout() { Orientation = StackOrientation.Horizontal, VerticalOptions = LayoutOptions.End, HorizontalOptions = LayoutOptions.FillAndExpand, Margin = new Thickness(5,10) };
             Binding dateNTime = new Binding("Date");
             dateNTime.Converter = new AssignmentDateConverter();
 
-            Label date = new Label() { TextColor = Color.White, FontSize = 9, FontAttributes = FontAttributes.Italic, Margin = new Thickness(0,5) };
+            Label date = new Label() { TextColor = Color.White, VerticalOptions = LayoutOptions.End ,FontSize = 15f, FontAttributes = FontAttributes.Bold, Margin = new Thickness(0,0), HorizontalOptions = LayoutOptions.StartAndExpand };
             date.SetBinding(Label.TextProperty, dateNTime);
+
+            gradeBox = new SfComboBox() { HorizontalOptions = LayoutOptions.End, WidthRequest = 150, TextColor = Color.White };
+            gradeBox.SetBinding(SfComboBox.TextProperty, new Binding("Grade"));
+            gradeBox.ComboBoxSource = gradesPoss;
+            gradeBox.SetBinding(SfComboBox.AutomationIdProperty, new Binding("Description"));
+            gradeBox.SelectionChanged += Gradebox_SelectionChanged;
+
+            last.Children.Add(date);
+            last.Children.Add(gradeBox);
 
             main.Children.Add(l);
             main.Children.Add(subMain);
-            main.Children.Add(date);
+            main.Children.Add(last);
 
             MainGrid.Children.Add(main);
             return MainGrid;
             });
         }
+
+        private void Gradebox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
+        {
+
+            SfComboBox temp = (SfComboBox)sender;
+            foreach(Assignments ass in Asses)
+            {
+                if(ass.Description == temp.AutomationId)
+                {
+                    ass.Grade = (string) e.Value;
+                }
+            }
+            UpdateOverallScore();
+
+        }
+
         private void ComboBox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
         {
             
@@ -358,12 +395,16 @@ namespace Gbook
 
             foreach (Assignments a in Asses)
             {
-                if(a.Grade != "" && a.Grade != "NG")
+                if(a.Grade != "" && a.Grade != "NG" && a.Grade != "X")
                 {
                     foreach(CategoriesBox cb1 in catBoxes)
                     {
                         if(cb1.Description == a.AssignmentType)
                         {
+                            if(a.Grade == "Z")
+                            {
+                                a.Points = 0;
+                            }
                             cb1.CatPossible += a.Possible;
                             cb1.CatPoints += a.Points;
                             cb1.Percent = (cb1.CatPoints / cb1.CatPossible);
@@ -436,13 +477,11 @@ namespace Gbook
             UpdateOverallScore();
         }
 
-        void resetButton_Clicked(System.Object sender, System.EventArgs e)
+        private void ResetData()
         {
-            Console.WriteLine("resetting: -> ");
-            Console.WriteLine("Og count: " + OgAsses.Count() + " New count: " + Asses.Count());
             Asses.Clear();
-            
-            foreach(Assignments a in OgAsses)
+
+            foreach (Assignments a in OgAsses)
             {
                 Assignments b = new Assignments();
                 b.Points = a.Points;
@@ -455,11 +494,18 @@ namespace Gbook
                 b.Date = a.Date;
                 b.Grade = a.Grade;
                 Asses.Add(b);
-             }
+            }
 
             AssList.ItemsSource = null;
             AssList.ItemsSource = Asses;
             UpdateOverallScore();
+        }
+
+        void resetButton_Clicked(System.Object sender, System.EventArgs e)
+        {
+
+            ResetData();
+    
         }
     }
 }

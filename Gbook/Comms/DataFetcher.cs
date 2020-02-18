@@ -90,9 +90,16 @@ namespace Gbook.Comms
                 foreach (Assignments asses in Asss)
                 {
                     asses.AssignmentType = Regex.Replace(asses.AssignmentType, "[^a-zA-Z]", "");
-                    if(asses.Grade == "" && asses.Points == 0)
+                    if(asses.Points == 0)
                     {
-                        asses.Grade = "NG";
+                        if(asses.Grade == "")
+                        {
+                            asses.Grade = "NG";
+                        }
+                        else
+                        {
+                            asses.Grade = "Z";
+                        }
                     }
                     if (Math.Abs(asses.Possible) > 0)
                     {
@@ -158,6 +165,24 @@ namespace Gbook.Comms
                     finalCat.WeightPercent = obj.OverallPercent;
                     tempCats.Add(finalCat);
 
+                }
+
+                foreach(Assignments asses in Asss)
+                {
+                    if(asses.Grade != "" && asses.Grade != "NG")
+                    {
+                        if(asses.Points == 0)
+                        {
+                            if(asses.Possible > 0)
+                            {
+                                asses.Grade = "Z";
+                            }
+                        }
+                        else
+                        {
+                            asses.Grade = "Graded";
+                        }
+                    }
                 }
 
                 obj.CatInfoSet = tempCats;
