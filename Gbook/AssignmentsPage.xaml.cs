@@ -471,6 +471,7 @@ namespace Gbook
             newAss.Possible = 0;
             newAss.AssignmentType = "Ungraded";
             Asses.Insert(0,newAss);
+            AssList.ItemsSource = Asses;
             UpdateOverallScore();
         }
 
