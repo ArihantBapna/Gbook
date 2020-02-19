@@ -3,6 +3,7 @@
     <ContentPage.ToolbarItems> 
         <ToolbarItem x:Name="addButton" Text="Add" Clicked="addButton_Clicked"/>
         <ToolbarItem x:Name="resetButton" Text="Reset" Clicked="resetButton_Clicked"/>
+        <ToolbarItem x:Name="bumpButton" Text="Bump" Clicked="bumpButton_Clicked"/>
     </ContentPage.ToolbarItems>
     <Grid x:Name="mainHold">
         <gradient:SfGradientView>
@@ -30,7 +31,7 @@
                     <StackLayout x:Name="CategoryHolder" VerticalOptions="CenterAndExpand" Orientation="Vertical">
                     </StackLayout>
                 </StackLayout>
-                <syncfusion1:SfListView x:Name="AssList" android:ListView.IsFastScrollEnabled="false" VerticalOptions="StartAndExpand" ></syncfusion1:SfListView>
+                <syncfusion1:SfListView x:Name="AssList" android:ListView.IsFastScrollEnabled="True" VerticalOptions="StartAndExpand" ></syncfusion1:SfListView>
             </StackLayout>
         </StackLayout>
     </Grid>

@@ -59,20 +59,28 @@ namespace Gbook.ClassFiles
             get { return possible; }
             set
             {
-                if (value < this.Points)
+                if (value == possible)
                 {
-                    points = value;
-                    possible = points;
-                    RaisedOnPropertyChanged("Possible");
+                    //Do nothing
                 }
                 else
                 {
-                    possible = value;
+                    if (value < this.Points)
+                    {
+                        points = value;
+                        possible = points;
+                        RaisedOnPropertyChanged("Possible");
+                    }
+                    else
+                    {
+                        possible = value;
+                    }
+                    this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
+                    this.Percent = ((this.Points / this.Possible) * 100);
+                    EvaluateGrade();
+                    RaisedOnPropertyChanged("Possible");
                 }
-                this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
-                this.Percent = ((this.Points / this.Possible) * 100);
-                EvaluateGrade();
-                RaisedOnPropertyChanged("Possible");
+
             }
         }
 
@@ -82,20 +90,29 @@ namespace Gbook.ClassFiles
             get { return points; }
             set
             {
-                if(value > this.Possible)
+                if(value == points)
                 {
-                    points = value;
-                    possible = points;
-                    RaisedOnPropertyChanged("Points");
+                    //Do nothing
                 }
                 else
                 {
-                    points = value;
+                    if (value > this.Possible)
+                    {
+                        points = value;
+                        possible = points;
+                        RaisedOnPropertyChanged("Points");
+                    }
+                    else
+                    {
+                        points = value;
+                    }
+                    this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
+                    this.Percent = ((this.Points / this.Possible) * 100);
+                    EvaluateGrade();
+                    RaisedOnPropertyChanged("Points");
                 }
-                this.BackColor = ColorGet.ColorFromPercent((int)Math.Round(((this.Points / this.Possible) * 100), 0));
-                this.Percent = ((this.Points / this.Possible) * 100);
-                EvaluateGrade();
-                RaisedOnPropertyChanged("Points");
+
+
             }
         }
 
@@ -107,15 +124,19 @@ namespace Gbook.ClassFiles
                 {
                     //this.Grade = GradeFromScore.GetGrade(Percent);
                     this.Grade = "Graded";
+                    RaisedOnPropertyChanged("Grade");
                 }
                 else
                 {
                     this.Grade = "Z";
+                    RaisedOnPropertyChanged("Grade");
+
                 }
             }
             else
             {
                 this.Grade = "Graded";
+                RaisedOnPropertyChanged("Grade");
             }
         }
 

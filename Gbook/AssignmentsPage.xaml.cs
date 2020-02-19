@@ -38,8 +38,24 @@ namespace Gbook
             Asses = new ObservableCollection<Assignments>();
             Asses.Clear();
             OgAsses = new ObservableCollection<Assignments>(Globals.SelectedData.AssignmentsList);
+            foreach(Assignments a in OgAsses)
+            {
+                Assignments b = new Assignments();
+                b.Points = a.Points;
+                b.Possible = a.Possible;
+                b.Description = a.Description;
+                b.AssignmentType = a.AssignmentType;
+                b.Percent = a.Percent;
+                b.CatIndex = a.CatIndex;
+                b.BackColor = a.BackColor;
+                b.Date = a.Date;
+                b.Grade = a.Grade;
+                Asses.Add(b);
+            }
 
             InitializeComponent();
+
+
 
             oPa = 0;
             CatsOverall.Clear();
@@ -54,24 +70,8 @@ namespace Gbook
             ListTemplate();
             SetOverallDescription();
 
-            foreach (Assignments a in OgAsses)
-            {
-                Assignments b = new Assignments
-                {
-                    Points = a.Points,
-                    Possible = a.Possible,
-                    Description = a.Description,
-                    AssignmentType = a.AssignmentType,
-                    Percent = a.Percent,
-                    CatIndex = a.CatIndex,
-                    BackColor = a.BackColor,
-                    Date = a.Date,
-                    Grade = a.Grade
-                };
-                Asses.Add(b);
-            }
-
-            ResetData();
+            
+            
         }
 
         private void SetSwiping()
@@ -179,9 +179,10 @@ namespace Gbook
                 YBindingPath = "WeightPercent"
             };
             series2.SetBinding(ChartSeries.ItemsSourceProperty, new Binding("CatsOverall"));
+            //series2.BindingContext = Ot.CatsOverall;
             series2.ColorModel = ColorModel;
-            series2.SetBinding(ChartSeries.ColorProperty, new Binding("CatColor"));
-            series2.SetBinding(BarSeries.StrokeColorProperty, new Binding("CatColor"));
+            //series2.SetBinding(ChartSeries.ColorProperty, new Binding("CatColor"));
+            //series2.SetBinding(BarSeries.StrokeColorProperty, new Binding("CatColor"));
             series2.StrokeWidth = 0.3;
             series2.EnableAnimation = true;
             series2.AnimationDuration = 0.8;
@@ -250,8 +251,6 @@ namespace Gbook
             subMain.SetBinding(Element.AutomationIdProperty, new Binding("Id"));
             cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = 220, HeightRequest = 50, TextColor = Color.White, VerticalOptions=LayoutOptions.CenterAndExpand };
             cat.ComboBoxSource = Cats;
-            cat.IsEditableMode = false;
-            cat.SetBinding(SfComboBox.SelectedValueProperty, new Binding("Description"));
             cat.SelectionChanged += ComboBox_SelectionChanged;
 
             DropDownButtonSettings dropDownButtonSettings = new DropDownButtonSettings();
@@ -262,16 +261,14 @@ namespace Gbook
             dropDownButtonSettings.HighlightFontColor = Color.Black;
             cat.DropDownButtonSettings = dropDownButtonSettings;
             
-            Binding catBinding = new Binding("CatIndex");
-            cat.SetBinding(SfComboBox.SelectedIndexProperty, catBinding);
             cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType"));
 
             StackLayout border = new StackLayout() {WidthRequest = 150, HeightRequest = 30, VerticalOptions = LayoutOptions.StartAndExpand, HorizontalOptions = LayoutOptions.End, Margin = new Thickness(0,5) };
             StackLayout score = new StackLayout() {Orientation = StackOrientation.Horizontal, WidthRequest=150, VerticalOptions = LayoutOptions.StartAndExpand, HorizontalOptions = LayoutOptions.CenterAndExpand };
 
-            StackLayout holder1 = new StackLayout() { VerticalOptions = LayoutOptions.Start,HorizontalOptions=LayoutOptions.Center,WidthRequest = 85,HeightRequest=40 };
+            StackLayout holder1 = new StackLayout() { VerticalOptions = LayoutOptions.Start,HorizontalOptions=LayoutOptions.Center,WidthRequest = 105,HeightRequest=40 };
             var inputLayout1 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.StartAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
-            SfNumericTextBox points =new SfNumericTextBox() { TextAlignment = TextAlignment.Center , VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
+            SfNumericTextBox points =new SfNumericTextBox() { TextAlignment = TextAlignment.Center , VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
             points.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Points", BindingMode.TwoWay));
             inputLayout1.SetBinding(SfTextInputLayout.ContainerBackgroundColorProperty, new Binding("BackColor"));
             points.MaximumNumberDecimalDigits = 1;
@@ -280,9 +277,9 @@ namespace Gbook
             inputLayout1.InputView = points;
             holder1.Children.Add(inputLayout1);
 
-            StackLayout holder2 = new StackLayout() { VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Center, WidthRequest = 85, HeightRequest = 40 };
+            StackLayout holder2 = new StackLayout() { VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Center, WidthRequest = 105, HeightRequest = 40 };
             var inputLayout2 = new SfTextInputLayout() { ContainerType = ContainerType.Outlined, VerticalOptions = LayoutOptions.StartAndExpand,HorizontalOptions = LayoutOptions.Center, HeightRequest = 40, InputViewPadding = 0, ReserveSpaceForAssistiveLabels = false };
-            SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
+            SfNumericTextBox possible = new SfNumericTextBox() { TextAlignment = TextAlignment.Center, VerticalOptions = LayoutOptions.Start, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, HeightRequest = 40, Margin = 0, SelectAllOnFocus = true };
             possible.SetBinding(SfNumericTextBox.ValueProperty, new Binding("Possible", BindingMode.TwoWay));
             inputLayout2.SetBinding(SfTextInputLayout.ContainerBackgroundColorProperty, new Binding("BackColor"));
             possible.MaximumNumberDecimalDigits = 1;
@@ -506,6 +503,23 @@ namespace Gbook
 
             ResetData();
     
+        }
+
+        void bumpButton_Clicked(System.Object sender, System.EventArgs e)
+        {
+            int count = 0;
+            List<int> pos = new List<int>();
+            int iterate = 0;
+            foreach(Assignments a in Asses)
+            {
+                if(a.Grade == "NG" && a.Possible > 0)
+                {
+                    count++;
+                    pos.Add(iterate);
+                }
+                iterate++;
+            }
+            
         }
     }
 }
