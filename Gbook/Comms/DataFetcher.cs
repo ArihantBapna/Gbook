@@ -98,7 +98,14 @@ namespace Gbook.Comms
                         }
                         else
                         {
-                            asses.Grade = "Z";
+                            if(asses.Grade == "X")
+                            {
+                                asses.Grade = "X";
+                            }
+                            else
+                            {
+                                asses.Grade = "Z";
+                            }
                         }
                     }
                     if (Math.Abs(asses.Possible) > 0)
