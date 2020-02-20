@@ -506,6 +506,33 @@ namespace Gbook
     
         }
 
+        private string GetOverallFromPoint(int i)
+        {
+            ObservableCollection<CategoriesBox> tempCats = new ObservableCollection<CategoriesBox>();
+            double netWeight = 0;
+            double tempOverall = 0;
+            foreach (CategoriesBox cb1 in catBoxes)
+            {
+                tempOverall += cb1.Percent * cb1.Weight;
+                if (cb1.Weight > 0 && cb1.CatPossible > 0)
+                {
+                    CategoriesBox cbTemp = new CategoriesBox();
+                    cbTemp.CatPoints = cb1.CatPoints;
+                    cbTemp.Percent = Math.Round(cb1.Percent, 2);
+                    cbTemp.CatPossible = cb1.CatPossible;
+                    cbTemp.Weight = cb1.Weight;
+                    cbTemp.Description = cb1.Description;
+                    cbTemp.WeightPercent = Math.Round((cbTemp.Percent * cbTemp.Weight), 2);
+                    cbTemp.DelWeight = cbTemp.Weight - cbTemp.WeightPercent;
+                    cbTemp.CatColor = ColorGet.ColorFromPercent((int)Math.Round(cbTemp.Percent * 100, 0));
+                    tempCats.Add(cbTemp);
+                    netWeight += cb1.Weight;
+                }
+            }
+            tempOverall = Math.Round((100 * tempOverall) / netWeight, 2);
+            return GradeFromScore.GetGrade(tempOverall);
+            }
+
         void bumpButton_Clicked(System.Object sender, System.EventArgs e)
         {
             int count = 0;
@@ -520,7 +547,35 @@ namespace Gbook
                 }
                 iterate++;
             }
-            
+            if(count == 1)
+            {
+                int subCount = 0;
+                foreach(CategoriesBox cb in catBoxes)
+                {
+                    if(cb.Description.Equals(Asses[pos[0]].AssignmentType))
+                    {
+                        Console.WriteLine(Asses[pos[0]].Description);
+                        Asses[pos[0]].Grade = "Graded";
+                        string currGrade = GradeFromScore.GetGrade(Ot.OverallAll);
+                        cb.CatPossible += Asses[pos[0]].Possible;
+
+                        Asses[pos[0]].Points = 0;
+                        cb.CatPoints += Asses[pos[0]].Points;
+                        cb.Percent = cb.CatPoints / cb.CatPossible;
+                        string gradeNew = GetOverallFromPoint(subCount);
+                        while (!currGrade.Equals(gradeNew))
+                        {
+                            Asses[pos[0]].Points += 1;
+                            cb.CatPoints += 1;
+                            cb.Percent = cb.CatPoints / cb.CatPossible;
+                            gradeNew = GetOverallFromPoint(subCount);
+                        }
+                        UpdateOverallScore();
+                        break;
+                    }
+                    subCount++;
+                }
+            }            
         }
     }
 }
