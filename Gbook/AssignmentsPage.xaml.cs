@@ -547,25 +547,43 @@ namespace Gbook
                 }
                 iterate++;
             }
-            if(count == 1)
+            /*
+            List<int> OrdPos = new List<int>();
+            foreach(int k in pos)
+            {
+                int c = 0;
+                foreach(int l in pos)
+                {
+                    if((Asses[pos[k]].Weight > Asses[pos[l]].Weight))
+                    {
+                        c++;
+                    }
+                }
+                if(c == pos.Count)
+                {
+                    OrdPos.Add(k);
+                }
+            }
+            */
+            foreach(int k in pos)
             {
                 int subCount = 0;
                 foreach(CategoriesBox cb in catBoxes)
                 {
-                    if(cb.Description.Equals(Asses[pos[0]].AssignmentType))
+                    if(cb.Description.Equals(Asses[pos[k]].AssignmentType))
                     {
-                        Console.WriteLine(Asses[pos[0]].Description);
-                        Asses[pos[0]].Grade = "Graded";
+                        Console.WriteLine(Asses[pos[k]].Description);
+                        Asses[pos[k]].Grade = "Graded";
                         string currGrade = GradeFromScore.GetGrade(Ot.OverallAll);
-                        cb.CatPossible += Asses[pos[0]].Possible;
+                        cb.CatPossible += Asses[pos[k]].Possible;
 
-                        Asses[pos[0]].Points = 0;
-                        cb.CatPoints += Asses[pos[0]].Points;
+                        Asses[pos[k]].Points = 0;
+                        cb.CatPoints += Asses[pos[k]].Points;
                         cb.Percent = cb.CatPoints / cb.CatPossible;
                         string gradeNew = GetOverallFromPoint(subCount);
                         while (!currGrade.Equals(gradeNew))
                         {
-                            Asses[pos[0]].Points += 1;
+                            Asses[pos[k]].Points += 1;
                             cb.CatPoints += 1;
                             cb.Percent = cb.CatPoints / cb.CatPossible;
                             gradeNew = GetOverallFromPoint(subCount);
