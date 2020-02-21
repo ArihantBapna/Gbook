@@ -155,7 +155,7 @@
       <Version>17.4.0.47</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfPicker">
-      <Version>17.4.0.47</Version>
+      <Version>17.4.0.50</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfRangeSlider">
       <Version>17.4.0.47</Version>
