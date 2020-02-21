@@ -231,20 +231,21 @@ namespace Gbook
                 series1.Color = Xamarin.Forms.Color.Transparent;
                 series1.StrokeColor = Color.White;
 
-                series1.CornerRadius = new ChartCornerRadius(5, 5, 0, 0);
+                series1.CornerRadius = new ChartCornerRadius(10,10,0,0);
                 series1.StrokeWidth = 0.3;
-                series1.EnableAnimation = true;
+                series1.EnableAnimation = false;
                 series1.AnimationDuration = 0.8;
                 series1.DataMarker = new ChartDataMarker();
                 DataTemplate dataMarkerTemplate2 = new DataTemplate(() =>
                 {
                     StackLayout stack = new StackLayout();
                     stack.Orientation = StackOrientation.Horizontal;
-                    Label label = new Label() { TextColor = Color.White };
-                    label.SetBinding(Label.TextProperty, "Weight", stringFormat: "Total: {0}");
-                    label.FontSize = 12;
-                    label.VerticalOptions = LayoutOptions.Center;
-                    stack.Children.Add(label);
+                    Label label1 = new Label() { TextColor = Color.White, FontSize = 12, VerticalOptions = LayoutOptions.Center };
+                    label1.SetBinding(Label.TextProperty, "WeightPercent");
+                    Label label2 = new Label() { TextColor = Color.White, FontSize = 12, VerticalOptions = LayoutOptions.Center };
+                    label2.SetBinding(Label.TextProperty, "Weight", stringFormat: "/{0}");
+                    stack.Children.Add(label1);
+                    stack.Children.Add(label2);
                     return stack;
                 });
                 series1.DataMarker.LabelTemplate = dataMarkerTemplate2;
@@ -261,11 +262,6 @@ namespace Gbook
                 series2.SetBinding(ColumnSeries.WidthProperty, chartBind2);
 
                 series2.Opacity = 1;
-                series2.CornerRadius = new ChartCornerRadius(5, 5, 0, 0);
-
-                series2.DataMarker = new ChartDataMarker();
-                series2.DataMarker.ShowLabel = true;
-                series2.DataMarker.LabelStyle.LabelPosition = DataMarkerLabelPosition.Inner;
 
                 Binding backCol = new Binding("CatInfoSet");
                 backCol.Converter = new BarChartConverter();
@@ -278,31 +274,8 @@ namespace Gbook
                     Converter = new BarChartConverter(),
                     ConverterParameter = 2
                 };
-
-                DataTemplate dataMarkerTemplate = new DataTemplate(() =>
-                {
-                    Frame f = new Frame() { Padding = 0, Margin = 0 };
-                    Binding bCol = new Binding("Percent");
-                    bCol.Converter = new BarChartConverter();
-                    bCol.ConverterParameter = 3;
-
-                    f.BackgroundColor = Color.Transparent;
-
-                    StackLayout stack = new StackLayout() { VerticalOptions = LayoutOptions.EndAndExpand };
-                    stack.Orientation = StackOrientation.Horizontal;
-                    Label label = new Label() { HorizontalOptions = LayoutOptions.Center, TextColor = Color.White, HorizontalTextAlignment = TextAlignment.Center };
-                    label.SetBinding(Label.TextProperty, "WeightPercent", stringFormat: "You: \n{0}");
-                    label.FontSize = 10;
-                    label.VerticalOptions = LayoutOptions.Center;
-
-                    stack.Children.Add(label);
-                    f.Content = stack;
-                    return f;
-                });
-                series2.DataMarker.LabelTemplate = dataMarkerTemplate;
-
                 series2.EnableAnimation = true;
-                series2.AnimationDuration = 1;
+                series2.CornerRadius = new ChartCornerRadius(10, 10, 0, 0);
 
                 chart.Series.Add(series2);
                 chart.Series.Add(series1);
@@ -321,6 +294,10 @@ namespace Gbook
                 chart.SecondaryAxis.LabelStyle.FontSize = 12;
                 chart.PrimaryAxis.LabelStyle.TextColor = Color.White;
                 chart.PrimaryAxis.LabelsIntersectAction = AxisLabelsIntersectAction.MultipleRows;
+
+                chart.PrimaryAxis.ShowMajorGridLines = false;
+                chart.SecondaryAxis.ShowMajorGridLines = false;
+                chart.SecondaryAxis.ShowMinorGridLines = false;
 
                 return chart;
             }

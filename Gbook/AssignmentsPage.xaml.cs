@@ -219,6 +219,10 @@ namespace Gbook
             chart.Series.Add(series2);
             chart.Series.Add(series1);
 
+            chart.PrimaryAxis.ShowMajorGridLines = false;
+            chart.SecondaryAxis.ShowMajorGridLines = false;
+            chart.SecondaryAxis.ShowMinorGridLines = false;
+
             Holder.Children.Add(chart);
             CategoryHolder.Children.Add(Holder);
             
@@ -570,20 +574,20 @@ namespace Gbook
                 int subCount = 0;
                 foreach(CategoriesBox cb in catBoxes)
                 {
-                    if(cb.Description.Equals(Asses[pos[k]].AssignmentType))
+                    if(cb.Description == Asses[k].AssignmentType)
                     {
-                        Console.WriteLine(Asses[pos[k]].Description);
-                        Asses[pos[k]].Grade = "Graded";
+                        Console.WriteLine(Asses[k].Description);
+                        Asses[k].Grade = "Graded";
                         string currGrade = GradeFromScore.GetGrade(Ot.OverallAll);
-                        cb.CatPossible += Asses[pos[k]].Possible;
+                        cb.CatPossible += Asses[k].Possible;
 
-                        Asses[pos[k]].Points = 0;
-                        cb.CatPoints += Asses[pos[k]].Points;
+                        Asses[k].Points = 0;
+                        cb.CatPoints += Asses[k].Points;
                         cb.Percent = cb.CatPoints / cb.CatPossible;
                         string gradeNew = GetOverallFromPoint(subCount);
                         while (!currGrade.Equals(gradeNew))
                         {
-                            Asses[pos[k]].Points += 1;
+                            Asses[k].Points += 1;
                             cb.CatPoints += 1;
                             cb.Percent = cb.CatPoints / cb.CatPossible;
                             gradeNew = GetOverallFromPoint(subCount);
