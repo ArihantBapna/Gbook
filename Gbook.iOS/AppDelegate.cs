@@ -10,6 +10,7 @@ using UIKit;
 using Syncfusion.XForms.iOS.MaskedEdit;
 using Syncfusion.SfNumericTextBox.XForms.iOS;
 using Syncfusion.SfNumericUpDown.XForms.iOS;
+using Syncfusion.SfPicker.XForms.iOS;
 
 namespace Gbook.iOS
 {
@@ -28,6 +29,18 @@ namespace Gbook.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            //Chips
+            Syncfusion.XForms.iOS.Buttons.SfChipGroupRenderer.Init();
+
+            //Radio Button
+            Syncfusion.XForms.iOS.Buttons.SfRadioButtonRenderer.Init();
+
+            //Popup Layout
+            Syncfusion.XForms.iOS.PopupLayout.SfPopupLayoutRenderer.Init();
+
+            //Picker
+            SfPickerRenderer.Init();
+
             //Range slider
             new SfRangeSliderRenderer();
 

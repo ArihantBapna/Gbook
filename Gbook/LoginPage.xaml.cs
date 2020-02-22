@@ -16,17 +16,23 @@ namespace Gbook
 
         public LoginPage()
         {
-            Task.Run(async () => await checkLoggedIn()).Wait();
+            string hexOne = Xamarin.Essentials.Preferences.Get("Color1", "00416A");
+            g1 = Color.FromHex(hexOne);
+
+            string hexTwo = Xamarin.Essentials.Preferences.Get("Color2", "E4E5E6");
+            g2 = Color.FromHex(hexTwo);
 
             InitializeComponent();
-            
+
+            Task.Run(async () => await checkLoggedIn()).Wait();
+
             SetColor();
         }
 
         private void SetColor()
         {
-            g1 = Color.FromHex("00416A");
-            g2 = Color.FromHex("E4E5E6");
+            ///g1 = Color.FromHex("00416A");
+            //g2 = Color.FromHex("E4E5E6");
             o1 = 0;
             o2 = 1;
 

@@ -63,7 +63,7 @@ namespace Gbook
             });
             if (LoginPage.LoggedIn)
             {
-                ((NavigationPage)Application.Current.MainPage).BarBackgroundColor = Color.FromHex("00416A");
+                ((NavigationPage)Application.Current.MainPage).BarBackgroundColor = LoginPage.g1;
                 ((NavigationPage)Application.Current.MainPage).BarTextColor = Color.White;
         
 
@@ -238,7 +238,7 @@ namespace Gbook
                 series1.DataMarker = new ChartDataMarker();
                 DataTemplate dataMarkerTemplate2 = new DataTemplate(() =>
                 {
-                    StackLayout stack = new StackLayout();
+                    StackLayout stack = new StackLayout() { Spacing = 0 };
                     stack.Orientation = StackOrientation.Horizontal;
                     Label label1 = new Label() { TextColor = Color.White, FontSize = 12, VerticalOptions = LayoutOptions.Center };
                     label1.SetBinding(Label.TextProperty, "WeightPercent");

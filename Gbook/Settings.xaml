@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" xmlns:navigationdrawer="clr-namespace:Syncfusion.SfNavigationDrawer.XForms;assembly=Syncfusion.SfNavigationDrawer.XForms" xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms" xmlns:sfrangeslider="clr-namespace:Syncfusion.SfRangeSlider.XForms;assembly=Syncfusion.SfRangeSlider.XForms" xmlns:sfradialmenu="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms" x:Class="Gbook.Settings">
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:gradient="clr-namespace:Syncfusion.XForms.Graphics;assembly=Syncfusion.Core.XForms" xmlns:navigationdrawer="clr-namespace:Syncfusion.SfNavigationDrawer.XForms;assembly=Syncfusion.SfNavigationDrawer.XForms" xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms" xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms" xmlns:sfrangeslider="clr-namespace:Syncfusion.SfRangeSlider.XForms;assembly=Syncfusion.SfRangeSlider.XForms" xmlns:sfradialmenu="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms" xmlns:syncfusion="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms" x:Class="Gbook.Settings">
     <ContentPage.ToolbarItems> 
         <ToolbarItem Icon="Hamburger.png" Text="Menu" Clicked="hamburgerButton_Clicked"/>
     </ContentPage.ToolbarItems>
@@ -31,13 +31,74 @@
                                 </gradient:SfLinearGradientBrush>            
                             </gradient:SfGradientView.BackgroundBrush>
                         </gradient:SfGradientView>
-                        <StackLayout x:Name="ShimmerField" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" >
-                            <StackLayout x:Name="Holder" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand">
-                                <StackLayout VerticalOptions="Center" HorizontalOptions="CenterAndExpand" Orientation="Vertical">
-                                    <StackLayout VerticalOptions="End" HorizontalOptions="Center" Orientation="Horizontal">
-                                        <Label Text="Doughnut" HorizontalOptions="Start"></Label>
-                                        <buttons:SfSwitch AllowIndeterminateState="False"  x:Name="ChartSwitch" StateChanged="ChartSwitch_Changed" VisualType="Cupertino" HorizontalOptions="Center" />
-                                        <Label HorizontalOptions="End" Text="Bar Charts"></Label>
+                        <StackLayout x:Name="ShimmerField" VerticalOptions="StartAndExpand" HorizontalOptions="FillAndExpand" >
+                            <StackLayout x:Name="Holder" VerticalOptions="StartAndExpand" HorizontalOptions="FillAndExpand">
+                                <StackLayout VerticalOptions="StartAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="10">
+                                    <StackLayout VerticalOptions="StartAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="10">
+
+                                        <StackLayout VerticalOptions="Start" HorizontalOptions="FillAndExpand">
+                                        <Label Text="Set First Color:" FontSize="Large" TextColor="White"></Label>
+            			                <buttons:SfChipGroup x:Name="colorPick1" Type="Choice" ChipBorderWidth="1" HorizontalOptions="FillAndExpand">
+				                            <buttons:SfChipGroup.ChipLayout>
+                                                <FlexLayout HorizontalOptions="Start"
+                                                            VerticalOptions="Center"
+                                                            Direction="Row"
+                                                            Wrap="Wrap"
+                                                            JustifyContent="Start"
+                                                            AlignContent="Start"
+                                                            AlignItems="Start"/> 
+				                            </buttons:SfChipGroup.ChipLayout>
+			                            </buttons:SfChipGroup>
+                                        </StackLayout>
+                                        <StackLayout VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                                        <Label Text="Set Second Color:" FontSize="Large" TextColor="White"></Label>
+            			                <buttons:SfChipGroup x:Name="colorPick2" Type="Choice" ChipBorderWidth="1" HorizontalOptions="FillAndExpand">
+				                            <buttons:SfChipGroup.ChipLayout>
+                                                <FlexLayout HorizontalOptions="Start"
+                                                            VerticalOptions="Center"
+                                                            Direction="Row"
+                                                            Wrap="Wrap"
+                                                            JustifyContent="Start"
+                                                            AlignContent="Start"
+                                                            AlignItems="Start"/> 
+				                            </buttons:SfChipGroup.ChipLayout>
+			                            </buttons:SfChipGroup> 
+                                        </StackLayout>
+                                    </StackLayout>
+                                    <StackLayout VerticalOptions="EndAndExpand" HorizontalOptions="Center" Orientation="Horizontal" Margin="10">
+                                        <Label Text="Doughnut" HorizontalOptions="Start" VerticalOptions="Center" TextColor="White" FontSize="Medium"></Label>
+                                        <buttons:SfSwitch AllowIndeterminateState="False" VisualType="Custom" x:Name="ChartSwitch" StateChanged="ChartSwitch_Changed" HorizontalOptions="Center">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup  x:Name="CommonStates">
+                                                    <VisualState x:Name="On">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="SwitchSettings">
+                                                                <Setter.Value>
+                                                                    <buttons:DefaultSwitchSettings x:TypeArguments="buttons:OnState" 
+                                                                     ThumbBorderColor="DarkCyan" ThumbColor="Aqua" 
+                                                                     TrackBorderColor="Green" TrackColor="GreenYellow" TrackHeightRequest="45"
+                                                                     TrackWidthRequest="75"
+                                                                     BusyIndicatorColor="Coral" />
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                    <VisualState x:Name="Off">
+                                                        <VisualState.Setters>
+                                                            <Setter Property="SwitchSettings">
+                                                                <Setter.Value>
+                                                                    <buttons:DefaultSwitchSettings x:TypeArguments="buttons:OffState" 
+                                                                    ThumbBorderColor="DarkCyan" ThumbColor="Aqua" TrackHeightRequest="45"
+                                                                    TrackWidthRequest="75"
+                                                                    TrackBorderColor="Green" TrackColor="GreenYellow"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </VisualState.Setters>
+                                                    </VisualState>
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+                                        </buttons:SfSwitch>
+                                        <Label HorizontalOptions="End" Text="Bar Charts" VerticalOptions="Center" TextColor="White" FontSize="Medium"></Label>
                                     </StackLayout>
                                 </StackLayout>
                             </StackLayout>

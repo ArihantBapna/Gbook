@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gbook.ClassFiles;
+using Gbook.Converters;
 using Gbook.ViewModel;
 using Syncfusion.ListView.XForms;
 using Syncfusion.XForms.Buttons;
@@ -13,17 +14,36 @@ namespace Gbook
         public Settings()
         {
             InitializeComponent();
-
+            this.Title = "Settings";
             grad1.Color = LoginPage.g1;
             grad1.Offset = LoginPage.o1;
             grad2.Color = LoginPage.g2;
             grad2.Offset = LoginPage.o2;
+
+            SetPicker();
 
             NavListRepo r = new NavListRepo();
             navList.ItemsSource = r.Navy;
             StudentName.Text = Globals.Dataset[0].StudentName;
             navList.SelectionChanged += navListTapped;
 
+        }
+
+        private void SetPicker()
+        {
+            colorPick1.BindingContext = new ColorInfo();
+            colorPick1.SelectionChanged += chipgroup1_SelectionChanged;
+            colorPick1.SetBinding(SfChipGroup.SelectedItemProperty, new Binding("SelectedItem", BindingMode.TwoWay));
+            Binding b = new Binding("Colors");
+            b.Converter = new ColorToChipConverter();
+            colorPick1.SetBinding(SfChipGroup.ItemsSourceProperty, b);
+
+            colorPick2.BindingContext = new ColorInfo();
+            colorPick2.SelectionChanged += chipgroup1_SelectionChanged;
+            colorPick2.SetBinding(SfChipGroup.SelectedItemProperty, new Binding("SelectedItem", BindingMode.TwoWay));
+            Binding b2 = new Binding("Colors");
+            b2.Converter = new ColorToChipConverter2();
+            colorPick2.SetBinding(SfChipGroup.ItemsSourceProperty, b2);
         }
 
         protected override void OnAppearing()
@@ -57,6 +77,11 @@ namespace Gbook
         void hamburgerButton_Clicked(object sender, EventArgs e)
         {
             navDraw.ToggleDrawer();
+        }
+
+        private void chipgroup1_SelectionChanged(object sender, Syncfusion.Buttons.XForms.SfChip.SelectionChangedEventArgs e)
+        {
+            Console.WriteLine(e.AddedItem);
         }
 
 

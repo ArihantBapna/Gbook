@@ -24,7 +24,7 @@ namespace Gbook
         private static ObservableCollection<Assignments> OgAsses;
         private static ObservableCollection<Assignments> Asses;
         private static List<string> Cats = new List<string>();
-
+        private static SfChart chart;
         private static ObservableCollection<CategoriesBox> catBoxes = new ObservableCollection<CategoriesBox>();
         private static ChartColorModel ColorModel = new ChartColorModel();
         private static OverallTracker Ot = new OverallTracker();
@@ -162,14 +162,14 @@ namespace Gbook
 
 
             StackLayout Holder = new StackLayout();
-            SfChart chart = new SfChart() { SideBySideSeriesPlacement = false, HeightRequest = 150, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = Application.Current.MainPage.Width };
+            chart = new SfChart() { SideBySideSeriesPlacement = false, HeightRequest = 150, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest = Application.Current.MainPage.Width };
             //Initializing Primary Axis
            
             chart.SideBySideSeriesPlacement = false;
-            CategoryAxis primaryAxis = new CategoryAxis() { LabelStyle = new ChartAxisLabelStyle() { TextColor = Color.White } };
+            CategoryAxis primaryAxis = new CategoryAxis() { LabelStyle = new ChartAxisLabelStyle() { TextColor = Color.White ,LabelAlignment = ChartAxisLabelAlignment.Center, LabelsPosition = AxisElementPosition.Outside, WrappedLabelAlignment = ChartAxisLabelAlignment.Center }, OpposedPosition = false };
 
             //Initializing Secondary Axis
-            NumericalAxis secondaryAxis = new NumericalAxis() { Minimum = 0, Maximum = 100, Interval = 20, RangePadding = NumericalPadding.None, LabelStyle = new ChartAxisLabelStyle() { TextColor = Color.White } };
+            NumericalAxis secondaryAxis = new NumericalAxis() { Minimum = 0, Maximum = 119, Interval = 20, RangePadding = NumericalPadding.None, LabelStyle = new ChartAxisLabelStyle() { TextColor = Color.White }, IsInversed = false };
             chart.SecondaryAxis = secondaryAxis;
             chart.PrimaryAxis = primaryAxis;
             chart.BindingContext = Ot;
@@ -191,7 +191,7 @@ namespace Gbook
             {
                 StackLayout layout = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0 };
                 Label l1 = new Label() { TextColor = Color.White, FontSize = 10f };
-                l1.SetBinding(Label.TextProperty, new Binding("WeightPercent"));
+                l1.SetBinding(Label.TextProperty, new Binding("WeightPercent", stringFormat: "{0}"));
                 Label l2 = new Label() { TextColor = Color.White, FontSize = 10f };
                 l2.SetBinding(Label.TextProperty, new Binding("Weight", stringFormat: "/{0}"));
                 layout.Children.Add(l1);
@@ -225,15 +225,6 @@ namespace Gbook
 
             Holder.Children.Add(chart);
             CategoryHolder.Children.Add(Holder);
-            
-
-            /*
-            oPa = (oPa * 100) / netWeight;
-            oPa = Math.Round(oPa, 2);
-            Ot.OverallInCats = CatsOverall;
-            Ot.OverallColor = ColorGet.ColorFromPercent((int)Math.Round(oPa, 0));
-            Ot.OverallAll = oPa;
-            */
         }
 
 
@@ -353,8 +344,6 @@ namespace Gbook
                 {
                     Asses[id].AssignmentType = catBoxes[temp.SelectedIndex].Description;
                     Asses[id].Weight = catBoxes[temp.SelectedIndex].Weight;
-                    //Console.WriteLine("Selected: " +temp.SelectedIndex);
-                    //Console.WriteLine("Weight: " +catBoxes[temp.SelectedIndex].Weight);
                 }
                 UpdateOverallScore();
             }
@@ -468,6 +457,7 @@ namespace Gbook
 
         void addButton_Clicked(System.Object sender, System.EventArgs e)
         {
+            chart.SuspendSeriesNotification();
             Assignments newAss = new Assignments();
             newAss.Description = "Added just now";
             newAss.Date = DateTime.Now.ToString();
@@ -477,6 +467,7 @@ namespace Gbook
             Asses.Insert(0,newAss);
             AssList.ItemsSource = Asses;
             UpdateOverallScore();
+            chart.ResumeSeriesNotification();
         }
 
         private void ResetData()
