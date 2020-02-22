@@ -24,7 +24,7 @@ namespace Gbook
         private static ObservableCollection<Assignments> OgAsses;
         private static ObservableCollection<Assignments> Asses;
         private static List<string> Cats = new List<string>();
-        private static SfChart chart;
+        private static SfChart chart = new SfChart();
         private static ObservableCollection<CategoriesBox> catBoxes = new ObservableCollection<CategoriesBox>();
         private static ChartColorModel ColorModel = new ChartColorModel();
         private static OverallTracker Ot = new OverallTracker();
@@ -92,7 +92,7 @@ namespace Gbook
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
                 var deleteGrid = new Grid() { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.FillAndExpand };
-                var l1 = new Label() { Text = "Delete", FontSize=18f, FontAttributes = FontAttributes.Bold, TextColor = Color.White}    ;
+                var l1 = new Label() { Text = "Delete", FontSize=18f, FontAttributes = FontAttributes.Bold, TextColor = Color.White, VerticalOptions = LayoutOptions.Center, VerticalTextAlignment = TextAlignment.Center}    ;
                 deleteGrid.Children.Add(l1);
                 grid1.Children.Add(deleteGrid);
 
@@ -238,7 +238,7 @@ namespace Gbook
             StackLayout main = new StackLayout() {Spacing = 0, Margin = 0, Padding = 0, Orientation = StackOrientation.Vertical, VerticalOptions= LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand };
 
             StackLayout firstRow = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0, VerticalOptions=LayoutOptions.Fill, HorizontalOptions = LayoutOptions.FillAndExpand, HeightRequest=50 };
-                Label l = new Label() { TextColor = Color.White, FontSize = 18, FontAttributes = FontAttributes.Bold, HorizontalOptions=LayoutOptions.StartAndExpand, VerticalOptions=LayoutOptions.Center,VerticalTextAlignment=TextAlignment.Center,Margin = new Thickness(0, 0) };
+                Label l = new Label() { TextColor = Color.White, FontSize = 18, WidthRequest=200, LineBreakMode=LineBreakMode.TailTruncation ,FontAttributes = FontAttributes.Bold, HorizontalOptions=LayoutOptions.StartAndExpand, VerticalOptions=LayoutOptions.Center,VerticalTextAlignment=TextAlignment.Center,Margin = new Thickness(0, 0) };
                 l.SetBinding(Label.TextProperty, new Binding("Description"));
                 firstRow.Children.Add(l);
 
@@ -274,23 +274,14 @@ namespace Gbook
             firstRow.Children.Add(border);
 
             StackLayout subMain = new StackLayout() { Spacing = 0, Margin = 0, Padding = 0, HorizontalOptions = LayoutOptions.FillAndExpand ,Orientation = StackOrientation.Horizontal, VerticalOptions = LayoutOptions.StartAndExpand };
-            subMain.SetBinding(Element.AutomationIdProperty, new Binding("Id"));
-            cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest=200 ,HeightRequest = 50, TextColor = Color.White, VerticalOptions=LayoutOptions.CenterAndExpand };
-            cat.ComboBoxSource = Cats;
-            cat.SelectionChanged += ComboBox_SelectionChanged;
-                DropDownButtonSettings dropDownButtonSettings = new DropDownButtonSettings();
-                dropDownButtonSettings.Height = 20;
-                dropDownButtonSettings.Width = 20;
-                dropDownButtonSettings.HighlightedBackgroundColor = Color.White;
-                dropDownButtonSettings.BackgroundColor = Color.Transparent;
-                dropDownButtonSettings.HighlightFontColor = Color.Black;
-                cat.DropDownButtonSettings = dropDownButtonSettings;
-                cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType"));
+                cat = new SfComboBox() {HorizontalOptions = LayoutOptions.StartAndExpand, WidthRequest=200 ,HeightRequest = 50, TextColor = Color.White, VerticalOptions=LayoutOptions.CenterAndExpand };
+                cat.ComboBoxSource = Cats;
+                cat.SelectionChanged += ComboBox_SelectionChanged;
+                cat.SetBinding(SfComboBox.TextProperty, new Binding("AssignmentType", BindingMode.TwoWay));
             subMain.Children.Add(cat);
                 gradeBox = new SfComboBox() { HorizontalOptions = LayoutOptions.End, WidthRequest = 150, TextColor = Color.White };
-                gradeBox.SetBinding(SfComboBox.TextProperty, new Binding("Grade"));
+                gradeBox.SetBinding(SfComboBox.TextProperty, new Binding("Grade", BindingMode.TwoWay));
                 gradeBox.ComboBoxSource = gradesPoss;
-                gradeBox.SetBinding(SfComboBox.AutomationIdProperty, new Binding("Description"));
                 gradeBox.SelectionChanged += Gradebox_SelectionChanged;
             subMain.Children.Add(gradeBox);
 
@@ -313,34 +304,27 @@ namespace Gbook
 
         private void Gradebox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
         {
-
-            SfComboBox temp = (SfComboBox)sender;
-            foreach(Assignments ass in Asses)
-            {
-                if(ass.Description == temp.AutomationId)
-                {
-                    ass.Grade = (string) e.Value;
-                }
-            }
             UpdateOverallScore();
-
         }
 
         private void ComboBox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
         {
-            
+            /*
             if (Globals.SelectedData != null && Globals.SelectedData.UCatInfoSet.Count > 0)
             {
                 SfComboBox temp = (SfComboBox)sender;
                 var x = temp.Parent;
+                Console.WriteLine("Automation Id here: " + x.AutomationId);
                 if (int.TryParse(x.AutomationId, out int id))
                 {
                     Asses[id].AssignmentType = catBoxes[temp.SelectedIndex].Description;
                     Asses[id].Weight = catBoxes[temp.SelectedIndex].Weight;
                 }
-                UpdateOverallScore();
+                
             }
-            
+            */
+            UpdateOverallScore();
+
         }
 
         private static void InitCatList()
@@ -365,6 +349,7 @@ namespace Gbook
 
         private static void UpdateOverallScore()
         {
+            chart.SuspendSeriesNotification();
             oPa = 0;
             double netWeight = 0;
             CatsOverall.Clear();
@@ -436,6 +421,7 @@ namespace Gbook
             ColorModel.CustomBrushes = cmc;
             Ot.OverallColor = ColorGet.ColorFromPercent((int)Math.Round(Ot.OverallAll, 0));
             Ot.CatsOverall = tempCats;
+            chart.ResumeSeriesNotification();
         }
 
         private void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -445,7 +431,6 @@ namespace Gbook
 
         void addButton_Clicked(System.Object sender, System.EventArgs e)
         {
-            chart.SuspendSeriesNotification();
             Assignments newAss = new Assignments();
             newAss.Description = "Added just now";
             newAss.Date = DateTime.Now.ToString();
@@ -456,7 +441,6 @@ namespace Gbook
             Asses.Insert(0,newAss);
             AssList.ItemsSource = Asses;
             UpdateOverallScore();
-            chart.ResumeSeriesNotification();
         }
 
         private void ResetData()

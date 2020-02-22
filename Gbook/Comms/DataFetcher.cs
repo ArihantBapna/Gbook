@@ -98,11 +98,7 @@ namespace Gbook.Comms
                         }
                         else
                         {
-                            if(asses.Grade == "X")
-                            {
-                                asses.Grade = "X";
-                            }
-                            else
+                            if(asses.Grade != "X")
                             {
                                 asses.Grade = "Z";
                             }
@@ -176,7 +172,7 @@ namespace Gbook.Comms
 
                 foreach(Assignments asses in Asss)
                 {
-                    if(asses.Grade != "" && asses.Grade != "NG")
+                    if(asses.Grade != "" && asses.Grade != "NG" && asses.Grade != "X")
                     {
                         if(asses.Points == 0)
                         {
@@ -187,7 +183,10 @@ namespace Gbook.Comms
                         }
                         else
                         {
-                            asses.Grade = "Graded";
+                            if(asses.Grade != "X")
+                            {
+                                asses.Grade = "Graded";
+                            }
                         }
                     }
                 }
