@@ -632,6 +632,10 @@ namespace Gbook
                         string gradeNew = GetOverallFromPoint();
                         while (!currGrade.Equals(gradeNew))
                         {
+                            if(Asses[k].Points == Asses[k].Possible)
+                            {
+                                break;
+                            }
                             Asses[k].Points += 1;
                             cb.CatPoints += 1;
                             cb.Percent = cb.CatPoints / cb.CatPossible;
