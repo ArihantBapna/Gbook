@@ -11,6 +11,7 @@ using Syncfusion.XForms.iOS.MaskedEdit;
 using Syncfusion.SfNumericTextBox.XForms.iOS;
 using Syncfusion.SfNumericUpDown.XForms.iOS;
 using Syncfusion.SfPicker.XForms.iOS;
+using Syncfusion.SfBusyIndicator.XForms.iOS;
 
 namespace Gbook.iOS
 {
@@ -94,6 +95,9 @@ namespace Gbook.iOS
             #pragma warning restore RECS0026 // Possible unassigned object created by 'new'
 
             global::Xamarin.Forms.Forms.Init();
+
+            //Busy Indicator
+            new SfBusyIndicatorRenderer();
 
             LoadApplication(new App());
 

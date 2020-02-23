@@ -10,9 +10,12 @@ using Gbook.Methods;
 using Gbook.ViewModel;
 using Syncfusion.DataSource;
 using Syncfusion.ListView.XForms;
+using Syncfusion.SfBusyIndicator.XForms;
 using Syncfusion.SfChart.XForms;
 using Syncfusion.SfNumericTextBox.XForms;
+using Syncfusion.XForms.Buttons;
 using Syncfusion.XForms.ComboBox;
+using Syncfusion.XForms.PopupLayout;
 using Syncfusion.XForms.TextInputLayout;
 using Xamarin.Forms;
 
@@ -20,19 +23,20 @@ namespace Gbook
 {
     public partial class AssignmentsPage : ContentPage
     {
-
         private static ObservableCollection<Assignments> OgAsses;
         private static ObservableCollection<Assignments> Asses;
-        private static List<string> Cats = new List<string>();
-        private static SfChart chart = new SfChart();
         private static ObservableCollection<CategoriesBox> catBoxes = new ObservableCollection<CategoriesBox>();
+        private static List<string> Cats = new List<string>();
+        private static List<double> CatsOverall = new List<double>();
+        private static List<string> gradesPoss = new List<string>() { "Graded", "NG", "X", "Z" };
+        private static SfChart chart = new SfChart();
         private static ChartColorModel ColorModel = new ChartColorModel();
         private static OverallTracker Ot = new OverallTracker();
-        private static List<double> CatsOverall = new List<double>();
-        private static List<string> gradesPoss = new List<string>() { "Graded","NG","X","Z" };
         public static  SfComboBox cat = new SfComboBox();
         public static SfComboBox gradeBox = new SfComboBox();
-        private static double oPa = 0;
+        private static SfPopupLayout bumpPop = new SfPopupLayout();
+        private static SfPopupLayout loadPop = new SfPopupLayout();
+        private static SfComboBox gradeSel = new SfComboBox();
         public AssignmentsPage()
         {
             Asses = new ObservableCollection<Assignments>();
@@ -55,9 +59,6 @@ namespace Gbook
 
             InitializeComponent();
 
-
-
-            oPa = 0;
             CatsOverall.Clear();
             catBoxes.Clear();
 
@@ -70,8 +71,6 @@ namespace Gbook
             ListTemplate();
             SetOverallDescription();
 
-            
-            
         }
 
         private void SetSwiping()
@@ -84,7 +83,6 @@ namespace Gbook
             AssList.RightSwipeTemplate = new DataTemplate(() =>
             {
                 var grid = new Grid();
-
                 var grid1 = new Grid()
                 {
                     BackgroundColor = Color.FromHex("#DC595F"),
@@ -95,12 +93,9 @@ namespace Gbook
                 var l1 = new Label() { Text = "Delete", FontSize=18f, FontAttributes = FontAttributes.Bold, TextColor = Color.White, VerticalOptions = LayoutOptions.Center, VerticalTextAlignment = TextAlignment.Center}    ;
                 deleteGrid.Children.Add(l1);
                 grid1.Children.Add(deleteGrid);
-
                 grid.Children.Add(grid1);
-
                 return grid1;
             });
-
         }
 
         private void ListView_SwipeEnded(object sender, Syncfusion.ListView.XForms.SwipeEndedEventArgs e)
@@ -235,10 +230,10 @@ namespace Gbook
             {
             Grid MainGrid = new Grid() { VerticalOptions = LayoutOptions.StartAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromRgba(0, 0, 0, 0.5), Margin = new Thickness(0), Padding = 0 };
 
-            StackLayout main = new StackLayout() {Spacing = 0, Margin = 0, Padding = 0, Orientation = StackOrientation.Vertical, VerticalOptions= LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand };
+            StackLayout main = new StackLayout() {Spacing = 5, Margin = 0, Padding = 0, Orientation = StackOrientation.Vertical, VerticalOptions= LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand };
 
             StackLayout firstRow = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0, VerticalOptions=LayoutOptions.Fill, HorizontalOptions = LayoutOptions.FillAndExpand, HeightRequest=50 };
-                Label l = new Label() { TextColor = Color.White, FontSize = 18, WidthRequest=200, LineBreakMode=LineBreakMode.TailTruncation ,FontAttributes = FontAttributes.Bold, HorizontalOptions=LayoutOptions.StartAndExpand, VerticalOptions=LayoutOptions.Center,VerticalTextAlignment=TextAlignment.Center,Margin = new Thickness(0, 0) };
+                Label l = new Label() { TextColor = Color.White, FontSize = 18, WidthRequest=200, LineBreakMode= Xamarin.Forms.LineBreakMode.TailTruncation ,FontAttributes = FontAttributes.Bold, HorizontalOptions=LayoutOptions.StartAndExpand, VerticalOptions=LayoutOptions.Center,VerticalTextAlignment=TextAlignment.Center,Margin = new Thickness(0, 0) };
                 l.SetBinding(Label.TextProperty, new Binding("Description"));
                 firstRow.Children.Add(l);
 
@@ -350,7 +345,6 @@ namespace Gbook
         private static void UpdateOverallScore()
         {
             chart.SuspendSeriesNotification();
-            oPa = 0;
             double netWeight = 0;
             CatsOverall.Clear();
             List<CategoryInfo> unboundCats = Globals.SelectedData.UCatInfoSet;
@@ -474,7 +468,7 @@ namespace Gbook
     
         }
 
-        private string GetOverallFromPoint(int i)
+        private string GetOverallFromPoint()
         {
             ObservableCollection<CategoriesBox> tempCats = new ObservableCollection<CategoriesBox>();
             double netWeight = 0;
@@ -504,64 +498,155 @@ namespace Gbook
         void bumpButton_Clicked(System.Object sender, System.EventArgs e)
         {
             int count = 0;
-            List<int> pos = new List<int>();
-            int iterate = 0;
-            foreach(Assignments a in Asses)
+            foreach(Assignments ass in Asses)
             {
-                if(a.Grade == "NG" && a.Possible > 0)
+                if (ass.Grade == "NG") count++;
+            }
+
+            DataTemplate popupView = new DataTemplate(() =>
+            {
+                var m = new StackLayout() { Orientation = StackOrientation.Vertical, Margin = 5, Spacing = 5, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, BackgroundColor = LoginPage.g1};
+
+                var topRow = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.CenterAndExpand };
+                var l = new Label() { Text = "Bump your grade", TextColor = Color.White, FontSize = 20f, HorizontalTextAlignment = TextAlignment.Center, HorizontalOptions = LayoutOptions.Center };
+                topRow.Children.Add(l);
+
+                var midRow = new StackLayout() { Orientation = StackOrientation.Horizontal, Spacing = 0, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.FillAndExpand };
+                var l2 = new Label() { Text = "Select the grade that you want", TextColor = Color.White, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
+                gradeSel = new SfComboBox() { WidthRequest = 200, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.End };
+                gradeSel.ComboBoxSource = new List<string>() { "A","B","C","D","E" };
+                gradeSel.Watermark = "Grade";
+                gradeSel.WatermarkColor = Color.White;
+                gradeSel.TextColor = Color.White;
+                midRow.Children.Add(l2);
+                midRow.Children.Add(gradeSel);
+
+                var botRow = new StackLayout() { Orientation = StackOrientation.Vertical, Spacing = 5, VerticalOptions = LayoutOptions.End, HorizontalOptions = LayoutOptions.FillAndExpand };
+                var l3 = new Label() { TextColor = Color.White, HorizontalOptions = LayoutOptions.CenterAndExpand, VerticalOptions = LayoutOptions.Start, FontSize = 15f };
+                l3.Text = count + " assignments found that can be bumped";
+                var b = new SfButton() { HorizontalOptions = LayoutOptions.Center, WidthRequest = 80, VerticalOptions = LayoutOptions.End, BackgroundColor = Color.DarkGray, Margin = new Thickness(5,5) };
+                b.Clicked += B_Clicked;
+                b.Text = "Bump";
+                b.TextColor = Color.White;
+                botRow.Children.Add(l3);
+                botRow.Children.Add(b);
+
+                m.Children.Add(topRow);
+                m.Children.Add(midRow);
+                m.Children.Add(botRow);
+                return m;
+            });
+            bumpPop.PopupView.ContentTemplate = popupView;
+            bumpPop.PopupView.AutoSizeMode = AutoSizeMode.Both;
+            bumpPop.PopupView.ShowHeader = false;
+            bumpPop.PopupView.ShowFooter = false;
+            bumpPop.ClosePopupOnBackButtonPressed = true;
+            bumpPop.Show();
+        }
+
+        private async void B_Clicked(object sender, EventArgs e)
+        {
+            await PreBumpWork();
+            Device.BeginInvokeOnMainThread(() => {
+                loadPop.Dismiss();
+                loadPop.IsOpen = false;
+                loadPop.IsVisible = false;
+            });
+        }
+
+        private Task PreBumpWork()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    bumpPop.Dismiss();
+                    DataTemplate loadView = new DataTemplate(() =>
+                    {
+                        SfBusyIndicator busy = new SfBusyIndicator();
+                        busy.IsBusy = true;
+                        return busy;
+                    });
+                    loadPop.PopupView.ContentTemplate = loadView;
+                    loadPop.PopupView.ShowFooter = false;
+                    loadPop.PopupView.ShowHeader = false;
+                    loadPop.ClosePopupOnBackButtonPressed = false;
+                    loadPop.Show();
+                });
+
+                if (String.IsNullOrEmpty((string)gradeSel.SelectedValue) || String.IsNullOrWhiteSpace((string)gradeSel.SelectedValue))
+                {
+                    Device.BeginInvokeOnMainThread(() => {
+                        gradeSel.Watermark = "Please select a grade";
+                        loadPop.Dismiss();
+                        bumpPop.Show();
+                    });
+                }
+                else
+                {
+                    string grade = (string)gradeSel.SelectedValue;
+
+                    Task.Run(async () => await BumpGrade(grade));
+                }
+            });
+        }
+
+        private async Task BumpGrade(string grade)
+        {
+            int count = 0;
+            List<int> pos = new List<int>();
+            pos.Clear();
+            int iterate = 0;
+            foreach (Assignments a in Asses)
+            {
+                if (a.Grade == "NG" && a.Possible > 0)
                 {
                     count++;
                     pos.Add(iterate);
                 }
                 iterate++;
             }
-            /*
-            List<int> OrdPos = new List<int>();
-            foreach(int k in pos)
-            {
-                int c = 0;
-                foreach(int l in pos)
-                {
-                    if((Asses[pos[k]].Weight > Asses[pos[l]].Weight))
-                    {
-                        c++;
-                    }
-                }
-                if(c == pos.Count)
-                {
-                    OrdPos.Add(k);
-                }
-            }
-            */
-            foreach(int k in pos)
+            await Task.FromResult<bool>(DoBump(grade, pos));
+            Device.BeginInvokeOnMainThread(() => {
+                UpdateOverallScore();
+                AssList.ItemsSource = Asses;
+            });
+        }
+
+        private bool DoBump(string grade, List<int> pos)
+        {
+            foreach (int k in pos)
             {
                 int subCount = 0;
-                foreach(CategoriesBox cb in catBoxes)
+                foreach (CategoriesBox cb in catBoxes)
                 {
-                    if(cb.Description == Asses[k].AssignmentType)
+                    if (cb.Description == Asses[k].AssignmentType)
                     {
-                        Console.WriteLine(Asses[k].Description);
                         Asses[k].Grade = "Graded";
-                        string currGrade = GradeFromScore.GetGrade(Ot.OverallAll);
+                        string currGrade = grade;
                         cb.CatPossible += Asses[k].Possible;
 
                         Asses[k].Points = 0;
                         cb.CatPoints += Asses[k].Points;
                         cb.Percent = cb.CatPoints / cb.CatPossible;
-                        string gradeNew = GetOverallFromPoint(subCount);
+                        string gradeNew = GetOverallFromPoint();
                         while (!currGrade.Equals(gradeNew))
                         {
                             Asses[k].Points += 1;
                             cb.CatPoints += 1;
                             cb.Percent = cb.CatPoints / cb.CatPossible;
-                            gradeNew = GetOverallFromPoint(subCount);
+                            gradeNew = GetOverallFromPoint();
                         }
-                        UpdateOverallScore();
                         break;
                     }
                     subCount++;
                 }
-            }            
+            }
+            loadPop.Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                loadPop.Dismiss();
+            });
+            return true;
         }
     }
 }

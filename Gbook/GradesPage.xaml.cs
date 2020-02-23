@@ -30,6 +30,7 @@ namespace Gbook
 
             NavListRepo r = new NavListRepo();
             navList.ItemsSource = r.Navy;
+            navList.BackgroundColor = LoginPage.g1;
 
             if (!LoginPage.LoggedIn)
             {

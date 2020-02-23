@@ -105,6 +105,9 @@
     <PackageReference Include="Syncfusion.Xamarin.SfNumericUpDown">
       <Version>17.4.0.50</Version>
     </PackageReference>
+    <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator">
+      <Version>17.4.0.50</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />

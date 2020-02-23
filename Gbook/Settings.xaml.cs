@@ -24,6 +24,7 @@ namespace Gbook
 
             NavListRepo r = new NavListRepo();
             navList.ItemsSource = r.Navy;
+            navList.BackgroundColor = LoginPage.g1;
             StudentName.Text = Globals.Dataset[0].StudentName;
             navList.SelectionChanged += navListTapped;
 

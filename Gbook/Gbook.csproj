@@ -30,6 +30,7 @@
     <PackageReference Include="Syncfusion.Xamarin.SfMaskedEdit" Version="17.4.0.50" />
     <PackageReference Include="Syncfusion.Xamarin.SfNumericTextBox" Version="17.4.0.50" />
     <PackageReference Include="Syncfusion.Xamarin.SfNumericUpDown" Version="17.4.0.50" />
+    <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator" Version="17.4.0.50" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ClassFiles\" />
